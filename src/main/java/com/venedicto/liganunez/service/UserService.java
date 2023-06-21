@@ -9,4 +9,8 @@ import com.venedicto.liganunez.repository.UserRepository;
 public class UserService {
 	@Autowired
 	private UserRepository userRepository;
+	
+	public boolean userExists(String email) {
+		return userRepository.checkUserExistence(email) == 1;
+	}
 }
