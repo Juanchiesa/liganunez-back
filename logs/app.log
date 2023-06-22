@@ -333,3 +333,22 @@ Caused by: java.sql.SQLIntegrityConstraintViolationException: Duplicate entry 'e
 	at org.springframework.jdbc.core.JdbcTemplate.lambda$update$2(JdbcTemplate.java:965)
 	at org.springframework.jdbc.core.JdbcTemplate.execute(JdbcTemplate.java:651)
 	... 74 common frames omitted
+2023-06-22 15:39:40,750 INFO org.springframework.boot.StartupInfoLogger [main] Starting LigaNunezApi using Java 17.0.7 on DESKTOP-9UKRBV6 with PID 4336 (C:\Users\tambo\Documents\Venedicto Developers\liga-nunez-back\target\classes started by tambo in C:\Users\tambo\Documents\Venedicto Developers\liga-nunez-back)
+2023-06-22 15:39:40,761 DEBUG org.springframework.boot.StartupInfoLogger [main] Running with Spring Boot v2.7.12, Spring v5.3.27
+2023-06-22 15:39:40,762 INFO org.springframework.boot.SpringApplication [main] No active profile set, falling back to 1 default profile: "default"
+2023-06-22 15:39:42,496 INFO org.springframework.boot.web.embedded.tomcat.TomcatWebServer [main] Tomcat initialized with port(s): 8080 (http)
+2023-06-22 15:39:42,512 INFO org.apache.juli.logging.DirectJDKLog [main] Initializing ProtocolHandler ["http-nio-8080"]
+2023-06-22 15:39:42,514 INFO org.apache.juli.logging.DirectJDKLog [main] Starting service [Tomcat]
+2023-06-22 15:39:42,515 INFO org.apache.juli.logging.DirectJDKLog [main] Starting Servlet engine: [Apache Tomcat/9.0.75]
+2023-06-22 15:39:42,735 INFO org.apache.juli.logging.DirectJDKLog [main] Initializing Spring embedded WebApplicationContext
+2023-06-22 15:39:42,736 INFO org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext [main] Root WebApplicationContext: initialization completed in 1905 ms
+2023-06-22 15:39:43,807 INFO org.apache.juli.logging.DirectJDKLog [main] Starting ProtocolHandler ["http-nio-8080"]
+2023-06-22 15:39:43,855 INFO org.springframework.boot.web.embedded.tomcat.TomcatWebServer [main] Tomcat started on port(s): 8080 (http) with context path '/api/ln'
+2023-06-22 15:39:44,321 INFO org.springframework.boot.StartupInfoLogger [main] Started LigaNunezApi in 4.041 seconds (JVM running for 5.469)
+2023-06-22 15:40:02,513 INFO org.apache.juli.logging.DirectJDKLog [http-nio-8080-exec-2] Initializing Spring DispatcherServlet 'dispatcherServlet'
+2023-06-22 15:40:02,514 INFO org.springframework.web.servlet.FrameworkServlet [http-nio-8080-exec-2] Initializing Servlet 'dispatcherServlet'
+2023-06-22 15:40:02,516 INFO org.springframework.web.servlet.FrameworkServlet [http-nio-8080-exec-2] Completed initialization in 1 ms
+2023-06-22 15:40:02,566 INFO com.venedicto.liganunez.controller.UserApiController [http-nio-8080-exec-2] [Check user] Se recibió una solicitud para el correo example@gmail.com
+2023-06-22 15:40:02,654 TRACE com.venedicto.liganunez.configuration.retry.DbRetryListeners [http-nio-8080-exec-2] Iniciando consulta
+2023-06-22 15:40:02,687 INFO com.zaxxer.hikari.HikariDataSource [http-nio-8080-exec-2] HikariPool-1 - Starting...
+2023-06-22 15:40:04,829 INFO com.zaxxer.hikari.HikariDataSource [http-nio-8080-exec-2] HikariPool-1 - Start completed.
