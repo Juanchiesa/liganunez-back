@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.CannotGetJdbcConnectionException;
 import org.springframework.stereotype.Component;
 
+import com.venedicto.liganunez.exception.MailSenderException;
 import com.venedicto.liganunez.model.ErrorCodes;
 import com.venedicto.liganunez.model.http.HttpResponse;
 import com.venedicto.liganunez.model.http.User;
@@ -55,11 +56,11 @@ public class UserApiHandler {
 			httpStatus = HttpStatus.OK;
 			response.setOpCode("201");
 			log.debug("[Create user] Usuario registrado correctamente");
-		} catch(CannotGetJdbcConnectionException e) {
+		} catch(CannotGetJdbcConnectionException | MailSenderException e) {
 			httpStatus = HttpStatus.SERVICE_UNAVAILABLE;
 			response.setOpCode("503");
 			response.addErrorsItem(HttpUtils.generateError(ErrorCodes.LN0002));
-			log.error("[Create user] No se pudo establecer conexión con la base de datos");
+			log.error("[Create user] No se pudo establecer conexión con la base de datos", e);
 		} catch(DuplicateKeyException e) {
 			httpStatus = HttpStatus.BAD_REQUEST;
 			response.setOpCode("400");
