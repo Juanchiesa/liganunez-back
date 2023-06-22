@@ -7,14 +7,19 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.venedicto.liganunez.model.MailTypes;
 import com.venedicto.liganunez.model.http.User;
+import com.venedicto.liganunez.model.mail.AccountCreatedMailTemplate;
 import com.venedicto.liganunez.repository.UserRepository;
+import com.venedicto.liganunez.service.external.MailSender;
 import com.venedicto.liganunez.utils.EncodingUtils;
 import com.venedicto.liganunez.utils.NumberUtils;
 
 @Service
 public class UserService {
 	private Logger log = LoggerFactory.getLogger(UserService.class);
+	@Autowired
+	private MailSender mailService;
 	@Autowired
 	private UserRepository userRepository;
 	@Autowired
@@ -34,6 +39,8 @@ public class UserService {
 		
 		userRepository.createUser(id, encodedPassword, user);
 		
-		//TODO: implementar servicio de mail
+		AccountCreatedMailTemplate mailData = new AccountCreatedMailTemplate();
+		mailData.setAccessKey(password);
+		mailService.sendMail(user.getEmail(), MailTypes.ACCOUNT_CREATED, mailData);
 	}
 }
