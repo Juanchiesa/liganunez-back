@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.venedicto.liganunez.api.TournamentApi;
 import com.venedicto.liganunez.handler.TournamentApiHandler;
-import com.venedicto.liganunez.model.GetTournamentHttpResponse;
-import com.venedicto.liganunez.model.HttpResponse;
-import com.venedicto.liganunez.model.Tournament;
+import com.venedicto.liganunez.model.http.GetTournamentHttpResponse;
+import com.venedicto.liganunez.model.http.HttpResponse;
+import com.venedicto.liganunez.model.http.Tournament;
 import com.venedicto.liganunez.validator.TournamentValidator;
 
 @RestController

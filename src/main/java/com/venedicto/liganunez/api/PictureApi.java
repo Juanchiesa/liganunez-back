@@ -17,9 +17,9 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.venedicto.liganunez.model.GetPicturesHttpResponse;
-import com.venedicto.liganunez.model.HttpResponse;
-import com.venedicto.liganunez.model.Picture;
+import com.venedicto.liganunez.model.http.GetPicturesHttpResponse;
+import com.venedicto.liganunez.model.http.HttpResponse;
+import com.venedicto.liganunez.model.http.Picture;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
