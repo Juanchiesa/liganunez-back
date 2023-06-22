@@ -352,3 +352,4 @@ Caused by: java.sql.SQLIntegrityConstraintViolationException: Duplicate entry 'e
 2023-06-22 15:40:02,654 TRACE com.venedicto.liganunez.configuration.retry.DbRetryListeners [http-nio-8080-exec-2] Iniciando consulta
 2023-06-22 15:40:02,687 INFO com.zaxxer.hikari.HikariDataSource [http-nio-8080-exec-2] HikariPool-1 - Starting...
 2023-06-22 15:40:04,829 INFO com.zaxxer.hikari.HikariDataSource [http-nio-8080-exec-2] HikariPool-1 - Start completed.
+2023-06-22 15:40:05,099 TRACE com.venedicto.liganunez.configuration.retry.DbRetryListeners [http-nio-8080-exec-2] Consulta finalizada
