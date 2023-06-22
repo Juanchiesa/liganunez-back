@@ -15,6 +15,7 @@ import com.venedicto.liganunez.model.http.Error;
 import com.venedicto.liganunez.model.http.HttpResponse;
 import com.venedicto.liganunez.model.http.User;
 import com.venedicto.liganunez.model.http.UserLoginHttpResponse;
+import com.venedicto.liganunez.utils.HttpUtils;
 import com.venedicto.liganunez.validator.UserValidator;
 
 @RestController
@@ -30,10 +31,7 @@ public class UserApiController implements UserApi {
     	
     	List<Error> errors = validator.validateEmail(email);
     	if(!errors.isEmpty()) {
-    		log.error("[Check user] Request errónea: se han encontrado {} errores", errors.size());
-    		response.setOpCode("400");
-    		response.setErrors(errors);
-    		return new ResponseEntity<HttpResponse>(response, HttpStatus.BAD_REQUEST);
+    		return HttpUtils.badRequestResponse(log, response, errors);
     	}
     	
     	log.info("[Check user] Se recibió una solicitud para el correo {}", email);
@@ -41,7 +39,14 @@ public class UserApiController implements UserApi {
     }
 
     public ResponseEntity<HttpResponse> createUser(User body) {
-        return new ResponseEntity<HttpResponse>(HttpStatus.NOT_IMPLEMENTED);
+    	HttpResponse response = new HttpResponse();
+    	
+    	List<Error> errors = validator.validateUser(body);
+    	if(!errors.isEmpty()) {
+    		return HttpUtils.badRequestResponse(log, response, errors);
+    	}
+    	
+        return handler.createUser(response, body);
     }
 
     public ResponseEntity<UserLoginHttpResponse> loginUser(String email, String password) {
