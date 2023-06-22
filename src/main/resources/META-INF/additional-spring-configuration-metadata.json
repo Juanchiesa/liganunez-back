@@ -5,13 +5,23 @@
     "description": "A description for 'springfox.documentation.open-api.v3.path'"
   },
   {
-    "name": "retry.max.attempts",
+    "name": "develop",
     "type": "java.lang.String",
-    "description": "A description for 'retry.max.attempts'"
+    "description": "A description for 'develop'"
   },
   {
-    "name": "retry.backoff.time",
+    "name": "db.timeout",
     "type": "java.lang.String",
-    "description": "A description for 'retry.backoff.time'"
+    "description": "A description for 'db.timeout'"
+  },
+  {
+    "name": "db.retry.attempts",
+    "type": "java.lang.String",
+    "description": "A description for 'db.retry.attempts'"
+  },
+  {
+    "name": "db.retry.delay",
+    "type": "java.lang.String",
+    "description": "A description for 'db.retry.delay'"
   }
 ]}
