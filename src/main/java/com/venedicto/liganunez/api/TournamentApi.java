@@ -17,9 +17,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 
-import com.venedicto.liganunez.model.GetTournamentHttpResponse;
-import com.venedicto.liganunez.model.HttpResponse;
-import com.venedicto.liganunez.model.Tournament;
+import com.venedicto.liganunez.model.http.GetTournamentHttpResponse;
+import com.venedicto.liganunez.model.http.HttpResponse;
+import com.venedicto.liganunez.model.http.Tournament;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

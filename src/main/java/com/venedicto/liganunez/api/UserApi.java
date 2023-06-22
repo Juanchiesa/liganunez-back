@@ -15,9 +15,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 
-import com.venedicto.liganunez.model.HttpResponse;
-import com.venedicto.liganunez.model.User;
-import com.venedicto.liganunez.model.UserLoginHttpResponse;
+import com.venedicto.liganunez.model.http.HttpResponse;
+import com.venedicto.liganunez.model.http.User;
+import com.venedicto.liganunez.model.http.UserLoginHttpResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

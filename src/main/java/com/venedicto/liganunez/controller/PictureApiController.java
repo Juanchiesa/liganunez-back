@@ -11,9 +11,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.venedicto.liganunez.api.PictureApi;
 import com.venedicto.liganunez.handler.PictureApiHandler;
-import com.venedicto.liganunez.model.GetPicturesHttpResponse;
-import com.venedicto.liganunez.model.HttpResponse;
-import com.venedicto.liganunez.model.Picture;
+import com.venedicto.liganunez.model.http.GetPicturesHttpResponse;
+import com.venedicto.liganunez.model.http.HttpResponse;
+import com.venedicto.liganunez.model.http.Picture;
 import com.venedicto.liganunez.validator.PictureValidator;
 
 @RestController
