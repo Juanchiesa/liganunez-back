@@ -3,12 +3,15 @@ package com.venedicto.liganunez.service.external;
 import java.util.Base64;
 import java.util.Collections;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -21,6 +24,8 @@ import com.venedicto.liganunez.model.MailTypes;
 @Service
 public class MailSender {
 	private RestTemplate restTemplate;
+	@Autowired
+	private MailSenderException mailSenderException;
 	@Value("${mail.sender.url}")
 	private String url;
 	@Value("${mail.sender.api.key}")
@@ -34,11 +39,11 @@ public class MailSender {
 		this.restTemplate = new RestTemplate();
 	}
 	
-//	@Retryable(retryFor = CannotGetJdbcConnectionException.class,
-//			listeners = "dbRetryListeners",
-//			maxAttemptsExpression = "${mail.sender.retry.attempts}", 
-//			backoff = @Backoff(delayExpression = "${mail.sender.retry.delay}", maxDelayExpression = "${mail.sender.timeout}", multiplier = 1)
-//	)
+	@Retryable(retryFor = MailSenderException.class,
+			listeners = "mailSenderRetryListeners",
+			maxAttemptsExpression = "${mail.sender.retry.attempts}", 
+			backoff = @Backoff(delayExpression = "${mail.sender.retry.delay}", maxDelayExpression = "${mail.sender.timeout}", multiplier = 1)
+	)
 	public void sendMail(String receiver, MailTypes mailType, Object data) {
 		String credentials = apiUser+":"+apiKey;
 		byte[] encodedAuth = Base64.getEncoder().encode(credentials.getBytes());
@@ -59,10 +64,10 @@ public class MailSender {
 		try {
 			ResponseEntity<String> response = restTemplate.postForEntity(url, request, String.class);
 			if(response.getStatusCode() != HttpStatus.OK) {
-				throw new MailSenderException("Error al conectarse con el servicio de correo");
+				throw new Exception();
 			}
 		} catch(Exception e) {
-			throw new MailSenderException("Error al conectarse con el servicio de correo");
+			throw mailSenderException;
 		}
 	}
 }
