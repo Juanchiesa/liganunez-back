@@ -1,6 +1,5 @@
 package com.venedicto.liganunez.service.external;
 
-import java.util.Base64;
 import java.util.Collections;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,8 +29,6 @@ public class MailSender {
 	private String url;
 	@Value("${mail.sender.api.key}")
 	private String apiKey;
-	@Value("${mail.sender.api.user}")
-	private String apiUser;
 	@Value("${mail.sender.host}")
 	private String sender;
 	
@@ -45,20 +42,17 @@ public class MailSender {
 			backoff = @Backoff(delayExpression = "${mail.sender.retry.delay}", maxDelayExpression = "${mail.sender.timeout}", multiplier = 1)
 	)
 	public void sendMail(String receiver, MailTypes mailType, Object data) {
-		String credentials = apiUser+":"+apiKey;
-		byte[] encodedAuth = Base64.getEncoder().encode(credentials.getBytes());
-
 		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+		headers.setContentType(MediaType.APPLICATION_JSON);
 		headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
-		headers.add("Authorization", "Basic "+new String(encodedAuth));
+		headers.add("Authorization", apiKey);
 		
 		MultiValueMap<String, String> map= new LinkedMultiValueMap<>();
-		map.add("from", sender);
 		map.add("to", receiver);
 		map.add("subject", mailType.getSubject());
+		map.add("project", "ln");
 		map.add("template", mailType.getTemplate());
-		map.add("h:X-Mailgun-Variables", new Gson().toJson(data).toString());
+		map.add("data", new Gson().toJson(data).toString());
 		
 		HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String,String>>(map, headers);
 		try {
@@ -67,6 +61,7 @@ public class MailSender {
 				throw new Exception();
 			}
 		} catch(Exception e) {
+			mailSenderException.setMessage(e.getMessage());
 			throw mailSenderException;
 		}
 	}

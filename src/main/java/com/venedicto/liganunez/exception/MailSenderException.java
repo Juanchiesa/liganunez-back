@@ -7,9 +7,13 @@ import com.venedicto.liganunez.configuration.retry.Rollbacker;
 import com.venedicto.liganunez.configuration.retry.UserCreationRollbacker;
 import com.venedicto.liganunez.model.MailTypes;
 
+import lombok.Setter;
+
 @Component
 public class MailSenderException extends RuntimeException {
 	private static final long serialVersionUID = 9152993931321291166L;
+	@Setter
+	private String message;
 	@Autowired
 	private UserCreationRollbacker userCreationRollbacker;
 	
