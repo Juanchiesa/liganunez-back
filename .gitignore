@@ -1,1 +1,14 @@
-*.log
+**/target/
+/target/
+*/target/*
+.classpath
+.project
+.settings
+.classpath
+.factorypath
+.project
+.swagger-codegen-ignore
+.settings
+.logs/
+**/logs/
+*/logs/*
