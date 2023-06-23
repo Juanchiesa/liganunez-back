@@ -56,11 +56,16 @@ public class UserApiHandler {
 			httpStatus = HttpStatus.OK;
 			response.setOpCode("201");
 			log.debug("[Create user] Usuario registrado correctamente");
-		} catch(CannotGetJdbcConnectionException | MailSenderException e) {
+		} catch(CannotGetJdbcConnectionException e) {
 			httpStatus = HttpStatus.SERVICE_UNAVAILABLE;
 			response.setOpCode("503");
 			response.addErrorsItem(HttpUtils.generateError(ErrorCodes.LN0002));
 			log.error("[Create user] No se pudo establecer conexión con la base de datos", e);
+		} catch(MailSenderException e) {
+			httpStatus = HttpStatus.SERVICE_UNAVAILABLE;
+			response.setOpCode("503");
+			response.addErrorsItem(HttpUtils.generateError(ErrorCodes.LN0002));
+			log.error("[Create user] No se pudo establecer conexión con el servicio de correo electrónico", e);
 		} catch(DuplicateKeyException e) {
 			httpStatus = HttpStatus.BAD_REQUEST;
 			response.setOpCode("400");

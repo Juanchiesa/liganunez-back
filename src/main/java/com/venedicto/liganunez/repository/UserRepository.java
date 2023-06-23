@@ -16,6 +16,7 @@ public class UserRepository {
 	
 	private static final String CHECK_USER_QUERY = "SELECT COUNT(*) AS user_exists FROM users WHERE user_email = ?";
 	private static final String CREATE_USER = "INSERT INTO users(user_id, user_email, user_password, user_name, user_age, user_address) VALUES(?, ?, ?, ?, ?, ?)";
+	private static final String DELETE_USER = "DELETE FROM users WHERE user_email = ?";
 	
 	@Retryable(retryFor = CannotGetJdbcConnectionException.class,
 			listeners = "dbRetryListeners",
@@ -33,5 +34,14 @@ public class UserRepository {
 	)
 	public void createUser(String id, String password, User user) {
 		jdbcTemplate.update(CREATE_USER, id, user.getEmail(), password, user.getName(), user.getAge(), user.getAddress());
+	}
+	
+	@Retryable(retryFor = CannotGetJdbcConnectionException.class,
+			listeners = "dbRetryListeners",
+			maxAttemptsExpression = "${db.retry.attempts}", 
+			backoff = @Backoff(delayExpression = "${db.retry.delay}", maxDelayExpression = "${db.timeout}", multiplier = 1)
+	)
+	public void deleteUser(String email) {
+		jdbcTemplate.update(DELETE_USER, email);
 	}
 }
