@@ -50,7 +50,18 @@ public class UserApiController implements UserApi {
     }
 
     public ResponseEntity<UserLoginHttpResponse> loginUser(String email, String password) {
-        return new ResponseEntity<UserLoginHttpResponse>(HttpStatus.NOT_IMPLEMENTED);
+        UserLoginHttpResponse response = new UserLoginHttpResponse();
+        
+        List<Error> errors = validator.validateLoginRequest(email, password);
+        if(!errors.isEmpty()) {
+        	log.error("[Login] Request errónea: se han encontrado {} errores", errors.size());
+    		response.setOpCode("400");
+    		response.setErrors(errors);
+    		return new ResponseEntity<UserLoginHttpResponse>(response, HttpStatus.BAD_REQUEST);
+        }
+        
+        log.info("[Login] Se recibió una solicitud de acceso de {}", email);
+    	return handler.login(response, email, password);
     }
 
     public ResponseEntity<HttpResponse> logoutUser(String email) {

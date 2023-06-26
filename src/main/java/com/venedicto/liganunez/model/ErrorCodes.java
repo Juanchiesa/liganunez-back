@@ -10,7 +10,10 @@ public enum ErrorCodes {
 	LN0003("LN", "0003", "El campo 'barrio' no puede estar vacío"),
 	LN0004("LN", "0004", "El formato del campo 'edad' es incorrecto"),
 	LN0005("LN", "0005", "El campo 'nombre' no puede estar vacío"),
-	LN0006("LN", "0006", "El usuario ya se encuentra registrado");
+	LN0006("LN", "0006", "El usuario ya se encuentra registrado"),
+	LN0007("LN", "0007", "El campo 'contraseña' no puede estar vacío"),
+	LN0008("LN", "0008", "El usuario no se encuentra registrado"),
+	LN0009("LN", "0009", "Clave incorrecta");
 	
 	private String id;
 	private String code;
