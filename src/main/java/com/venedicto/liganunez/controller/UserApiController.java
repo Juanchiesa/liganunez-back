@@ -64,19 +64,11 @@ public class UserApiController implements UserApi {
     	return handler.login(response, email, password);
     }
 
-    public ResponseEntity<HttpResponse> logoutUser(String email) {
+    public ResponseEntity<HttpResponse> requestUserPasswordUpdate(String userEmail) {
         return new ResponseEntity<HttpResponse>(HttpStatus.NOT_IMPLEMENTED);
     }
 
-    public ResponseEntity<HttpResponse> requestUserPasswordUpdate() {
-        return new ResponseEntity<HttpResponse>(HttpStatus.NOT_IMPLEMENTED);
-    }
-
-    public ResponseEntity<HttpResponse> updateUserPassword(String newPassword, String authCode) {
-        return new ResponseEntity<HttpResponse>(HttpStatus.NOT_IMPLEMENTED);
-    }
-
-    public ResponseEntity<HttpResponse> updateUserPermissionLevel(Integer permissionLevel, String token) {
+    public ResponseEntity<HttpResponse> updateUserPassword(String userId) {
         return new ResponseEntity<HttpResponse>(HttpStatus.NOT_IMPLEMENTED);
     }
 }

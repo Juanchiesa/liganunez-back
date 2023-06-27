@@ -121,19 +121,4 @@ public class UserApiHandler {
 		
 		return new ResponseEntity<UserLoginHttpResponse>(response, httpStatus);
 	}
-	
-	public ResponseEntity<HttpResponse> logout(HttpResponse response, String token) {
-		HttpStatus httpStatus;
-		
-		try {
-			httpStatus = HttpStatus.OK;
-		} catch(Exception e) {
-			httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
-			response.setOpCode("500");
-			response.addErrorsItem(HttpUtils.generateError(ErrorCodes.LN0000));
-			log.error("[Logout] Ocurrió un error inesperado", e);
-		}
-		
-		return new ResponseEntity<HttpResponse>(response, httpStatus);
-	}
 }
