@@ -13,6 +13,7 @@ import com.venedicto.liganunez.model.MailTypes;
 import com.venedicto.liganunez.model.UserData;
 import com.venedicto.liganunez.model.http.User;
 import com.venedicto.liganunez.model.mail.AccountCreatedMailTemplate;
+import com.venedicto.liganunez.model.mail.PasswordUpdateRequestMailTemplate;
 import com.venedicto.liganunez.repository.UserRepository;
 import com.venedicto.liganunez.service.external.MailSender;
 import com.venedicto.liganunez.utils.NumberUtils;
@@ -55,5 +56,16 @@ public class UserService {
 		userData.getData().setAccessKey(null);
 		
 		return userData;
+	}
+	
+	public void generatePasswordUpdateRequest(String email) {
+		String code = UUID.randomUUID().toString();
+		log.debug("[Password update request] Generado el código de recuperación {}", code);
+		
+		userRepository.createPasswordUpdateRequest(email, code);
+		
+		PasswordUpdateRequestMailTemplate mailData = new PasswordUpdateRequestMailTemplate();
+		mailData.setRequestCode(code);
+		mailService.sendMail(email, MailTypes.UPDATE_PASSWORD_REQUEST, mailData);
 	}
 }

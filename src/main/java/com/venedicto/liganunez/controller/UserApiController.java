@@ -54,10 +54,7 @@ public class UserApiController implements UserApi {
         
         List<Error> errors = validator.validateLoginRequest(email, password);
         if(!errors.isEmpty()) {
-        	log.error("[Login] Request errónea: se han encontrado {} errores", errors.size());
-    		response.setOpCode("400");
-    		response.setErrors(errors);
-    		return new ResponseEntity<UserLoginHttpResponse>(response, HttpStatus.BAD_REQUEST);
+        	return HttpUtils.badRequestResponse(log, response, errors);
         }
         
         log.info("[Login] Se recibió una solicitud de acceso de {}", email);
@@ -65,7 +62,15 @@ public class UserApiController implements UserApi {
     }
 
     public ResponseEntity<HttpResponse> requestUserPasswordUpdate(String userEmail) {
-        return new ResponseEntity<HttpResponse>(HttpStatus.NOT_IMPLEMENTED);
+        HttpResponse response = new HttpResponse();
+        
+        List<Error> errors = validator.validateEmail(userEmail);
+        if(!errors.isEmpty()) {
+        	return HttpUtils.badRequestResponse(log, response, errors);
+        }
+        
+        log.info("[Password update request] Se recibió una solicitud de acceso de {}", userEmail);
+    	return handler.requestUserPasswordUpdate(response, userEmail);
     }
 
     public ResponseEntity<HttpResponse> updateUserPassword(String userId) {

@@ -4,7 +4,8 @@ import lombok.Getter;
 
 @Getter
 public enum MailTypes {
-	ACCOUNT_CREATED("[Liga Nuñez] Tu clave de acceso", "registration");
+	ACCOUNT_CREATED("[Liga Nuñez] Tu clave de acceso", "registration"),
+	UPDATE_PASSWORD_REQUEST("[Liga Nuñez] Confirmar cambio de clave", "registration");
 	
 	private String subject;
 	private String template;

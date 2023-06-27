@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.venedicto.liganunez.configuration.retry.Rollbacker;
+import com.venedicto.liganunez.configuration.retry.UpdatePasswordRequestRollbacker;
 import com.venedicto.liganunez.configuration.retry.UserCreationRollbacker;
 import com.venedicto.liganunez.model.MailTypes;
 
@@ -16,12 +17,16 @@ public class MailSenderException extends RuntimeException {
 	private String message;
 	@Autowired
 	private UserCreationRollbacker userCreationRollbacker;
+	@Autowired
+	private UpdatePasswordRequestRollbacker updatePasswordRequestRollbacker;
 	
 	public Rollbacker getRollbacker(MailTypes mailType) {
 		if(mailType.equals(MailTypes.ACCOUNT_CREATED)) {
 			return userCreationRollbacker;
+		} else if(mailType.equals(MailTypes.UPDATE_PASSWORD_REQUEST)) {
+			return updatePasswordRequestRollbacker;
 		}
 		
-		return null;
+		return new Rollbacker();
 	}
 }

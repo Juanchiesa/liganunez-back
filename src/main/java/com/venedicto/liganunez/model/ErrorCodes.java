@@ -13,7 +13,8 @@ public enum ErrorCodes {
 	LN0006("LN", "0006", "El usuario ya se encuentra registrado"),
 	LN0007("LN", "0007", "El campo 'contraseña' no puede estar vacío"),
 	LN0008("LN", "0008", "El usuario no se encuentra registrado"),
-	LN0009("LN", "0009", "Clave incorrecta");
+	LN0009("LN", "0009", "Clave incorrecta"),
+	LN0010("LN", "0010", "Ya se generó una solicitud para actualizar la contraseña");
 	
 	private String id;
 	private String code;

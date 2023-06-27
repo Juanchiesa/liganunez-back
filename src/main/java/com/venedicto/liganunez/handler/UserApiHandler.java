@@ -121,4 +121,32 @@ public class UserApiHandler {
 		
 		return new ResponseEntity<UserLoginHttpResponse>(response, httpStatus);
 	}
+	
+	public ResponseEntity<HttpResponse> requestUserPasswordUpdate(HttpResponse response, String email) {
+		HttpStatus httpStatus;
+		
+		try {
+			userService.generatePasswordUpdateRequest(email);
+			httpStatus = HttpStatus.CREATED;
+			response.setOpCode("201");
+			log.debug("[Password update request] Solicitud generada");
+		} catch(DuplicateKeyException e) {
+			httpStatus = HttpStatus.BAD_REQUEST;
+			response.setOpCode("400");
+			response.addErrorsItem(HttpUtils.generateError(ErrorCodes.LN0010));
+			log.error("[Password update request] Datos duplicados", e);
+		} catch(MailSenderException e) {
+			httpStatus = HttpStatus.SERVICE_UNAVAILABLE;
+			response.setOpCode("503");
+			response.addErrorsItem(HttpUtils.generateError(ErrorCodes.LN0002));
+			log.error("[Create user] No se pudo establecer conexión con el servicio de correo electrónico", e);
+		} catch(Exception e) {
+			httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+			response.setOpCode("500");
+			response.addErrorsItem(HttpUtils.generateError(ErrorCodes.LN0000));
+			log.error("[Password update request] Ocurrió un error inesperado", e);
+		}
+		
+		return new ResponseEntity<HttpResponse>(response, httpStatus);
+	}
 }
