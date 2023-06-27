@@ -23,9 +23,6 @@ public class UserValidator extends Validator {
 		return errors;
 	}
 	
-	private boolean stringNullOrEmpty(String value) {
-		return value == null || value.isEmpty();
-	}
 	
 	public List<Error> validateUser(User user) {
 		List<Error> errors = new ArrayList<>();
@@ -42,5 +39,20 @@ public class UserValidator extends Validator {
 		errors.addAll(validateEmail(user.getEmail()));
 		
 		return errors;
+	}
+	
+	public List<Error> validateLoginRequest(String email, String password) {
+		List<Error> errors = new ArrayList<>();
+		
+		errors.addAll(validateEmail(email));
+		if(stringNullOrEmpty(password)) {
+			errors.add(HttpUtils.generateError(ErrorCodes.LN0007));
+		}
+		
+		return errors;
+	}
+	
+	private boolean stringNullOrEmpty(String value) {
+		return value == null || value.isEmpty();
 	}
 }

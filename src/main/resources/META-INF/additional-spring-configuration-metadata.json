@@ -58,5 +58,15 @@
     "name": "mail.sender.host",
     "type": "java.lang.String",
     "description": "A description for 'mail.sender.host'"
+  },
+  {
+    "name": "session.duration",
+    "type": "java.lang.String",
+    "description": "A description for 'session.duration'"
+  },
+  {
+    "name": "session.secret.key",
+    "type": "java.lang.String",
+    "description": "A description for 'session.secret.key'"
   }
 ]}

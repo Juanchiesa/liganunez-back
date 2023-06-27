@@ -1,9 +1,12 @@
 package com.venedicto.liganunez.handler;
 
+import javax.security.auth.login.LoginException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.CannotGetJdbcConnectionException;
@@ -11,14 +14,19 @@ import org.springframework.stereotype.Component;
 
 import com.venedicto.liganunez.exception.MailSenderException;
 import com.venedicto.liganunez.model.ErrorCodes;
+import com.venedicto.liganunez.model.UserData;
 import com.venedicto.liganunez.model.http.HttpResponse;
 import com.venedicto.liganunez.model.http.User;
+import com.venedicto.liganunez.model.http.UserLoginHttpResponse;
+import com.venedicto.liganunez.service.AuthService;
 import com.venedicto.liganunez.service.UserService;
 import com.venedicto.liganunez.utils.HttpUtils;
 
 @Component
 public class UserApiHandler {
 	private static final Logger log = LoggerFactory.getLogger(UserApiHandler.class);
+	@Autowired
+	private AuthService authService;
 	@Autowired
 	private UserService userService;
 	
@@ -53,7 +61,7 @@ public class UserApiHandler {
 		
 		try {
 			userService.createUser(user);
-			httpStatus = HttpStatus.OK;
+			httpStatus = HttpStatus.CREATED;
 			response.setOpCode("201");
 			log.debug("[Create user] Usuario registrado correctamente");
 		} catch(CannotGetJdbcConnectionException e) {
@@ -79,5 +87,38 @@ public class UserApiHandler {
 		}
 		
 		return new ResponseEntity<HttpResponse>(response, httpStatus);
+	}
+	
+	public ResponseEntity<UserLoginHttpResponse> login(UserLoginHttpResponse response, String email, String password) {
+		HttpStatus httpStatus;
+		
+		try {
+			UserData user = userService.login(email, password);
+			response.setData(user.getData());
+			
+			String token = authService.generateSessionToken(user);
+			response.setToken(token);
+			
+			httpStatus = HttpStatus.OK;
+			response.setOpCode("200");
+			log.debug("[Login] Acceso aprobado");
+		} catch(EmptyResultDataAccessException e) {
+			httpStatus = HttpStatus.NOT_FOUND;
+			response.setOpCode("404");
+			response.addErrorsItem(HttpUtils.generateError(ErrorCodes.LN0008));
+			log.error("[Login] El usuario ingresado no se encuentra registrado", e);
+		}  catch(LoginException e) {
+			httpStatus = HttpStatus.BAD_REQUEST;
+			response.setOpCode("400");
+			response.addErrorsItem(HttpUtils.generateError(ErrorCodes.LN0009));
+			log.error("[Login] Clave incorrecta", e);
+		} catch(Exception e) {
+			httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+			response.setOpCode("500");
+			response.addErrorsItem(HttpUtils.generateError(ErrorCodes.LN0000));
+			log.error("[Login] Ocurrió un error inesperado", e);
+		}
+		
+		return new ResponseEntity<UserLoginHttpResponse>(response, httpStatus);
 	}
 }
