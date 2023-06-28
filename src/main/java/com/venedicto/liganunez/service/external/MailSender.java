@@ -36,11 +36,7 @@ public class MailSender {
 		this.restTemplate = new RestTemplate();
 	}
 	
-	@Retryable(retryFor = MailSenderException.class,
-			listeners = "mailSenderRetryListeners",
-			maxAttemptsExpression = "${mail.sender.retry.attempts}", 
-			backoff = @Backoff(delayExpression = "${mail.sender.retry.delay}", maxDelayExpression = "${mail.sender.timeout}", multiplier = 1)
-	)
+	@Retryable(retryFor = MailSenderException.class, listeners = "mailSenderRetryListeners", maxAttemptsExpression = "${mail.sender.retry.attempts}", backoff = @Backoff(delayExpression = "${mail.sender.retry.delay}", maxDelayExpression = "${mail.sender.timeout}", multiplier = 1))
 	public void sendMail(String receiver, MailTypes mailType, Object data) {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
@@ -48,6 +44,7 @@ public class MailSender {
 		headers.add("Authorization", apiKey);
 		
 		MultiValueMap<String, String> map= new LinkedMultiValueMap<>();
+		map.add("from", sender);
 		map.add("to", receiver);
 		map.add("subject", mailType.getSubject());
 		map.add("project", "ln");

@@ -97,7 +97,7 @@ public interface UserApi {
     @ApiResponses(value = { 
         @ApiResponse(responseCode = "200", description = "Contraseña actualizada", content = @Content(mediaType = "application/json", schema = @Schema(implementation = HttpResponse.class))),
         
-        @ApiResponse(responseCode = "404", description = "Usuario inexistente", content = @Content(mediaType = "application/json", schema = @Schema(implementation = HttpResponse.class))),
+        @ApiResponse(responseCode = "404", description = "Código inexistente", content = @Content(mediaType = "application/json", schema = @Schema(implementation = HttpResponse.class))),
         
         @ApiResponse(responseCode = "500", description = "Error del servidor", content = @Content(mediaType = "application/json", schema = @Schema(implementation = HttpResponse.class))),
         
@@ -105,5 +105,5 @@ public interface UserApi {
     @RequestMapping(value = "/user/update/password",
         produces = { "application/json" }, 
         method = RequestMethod.PATCH)
-    ResponseEntity<HttpResponse> updateUserPassword(@Parameter(in = ParameterIn.HEADER, description = "ID del usuario" ,required=true,schema=@Schema()) @RequestHeader(value="userId", required=true) String userId);
+    ResponseEntity<HttpResponse> updateUserPassword(@Parameter(in = ParameterIn.HEADER, description = "Código generado previamente" ,required=true,schema=@Schema()) @RequestHeader(value="requestCode", required=true) String requestCode);
 }

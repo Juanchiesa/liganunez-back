@@ -5,7 +5,6 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -54,10 +53,7 @@ public class UserApiController implements UserApi {
         
         List<Error> errors = validator.validateLoginRequest(email, password);
         if(!errors.isEmpty()) {
-        	log.error("[Login] Request errónea: se han encontrado {} errores", errors.size());
-    		response.setOpCode("400");
-    		response.setErrors(errors);
-    		return new ResponseEntity<UserLoginHttpResponse>(response, HttpStatus.BAD_REQUEST);
+        	return HttpUtils.badRequestResponse(log, response, errors);
         }
         
         log.info("[Login] Se recibió una solicitud de acceso de {}", email);
@@ -65,10 +61,26 @@ public class UserApiController implements UserApi {
     }
 
     public ResponseEntity<HttpResponse> requestUserPasswordUpdate(String userEmail) {
-        return new ResponseEntity<HttpResponse>(HttpStatus.NOT_IMPLEMENTED);
+        HttpResponse response = new HttpResponse();
+        
+        List<Error> errors = validator.validateEmail(userEmail);
+        if(!errors.isEmpty()) {
+        	return HttpUtils.badRequestResponse(log, response, errors);
+        }
+        
+        log.info("[Password update request] Se recibió una solicitud de {}", userEmail);
+    	return handler.requestUserPasswordUpdate(response, userEmail);
     }
 
-    public ResponseEntity<HttpResponse> updateUserPassword(String userId) {
-        return new ResponseEntity<HttpResponse>(HttpStatus.NOT_IMPLEMENTED);
+    public ResponseEntity<HttpResponse> updateUserPassword(String requestCode) {
+    	HttpResponse response = new HttpResponse();
+    	
+    	List<Error> errors = validator.validatePasswordUpdateRequest(requestCode);
+    	if(!errors.isEmpty()) {
+    		return HttpUtils.badRequestResponse(log, response, errors);
+    	}
+    	
+    	log.info("[Password update] Se recibió una solicitud con el código {}", requestCode);
+        return handler.updateUserPassword(response, requestCode);
     }
 }

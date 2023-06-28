@@ -18,10 +18,10 @@ public class HttpUtils {
 		return error;
 	}
 	
-	public static ResponseEntity<HttpResponse> badRequestResponse(Logger log, HttpResponse response, List<Error> errors) {
+	public static <T> ResponseEntity<T> badRequestResponse(Logger log, T response, List<Error> errors) {
 		log.error("[Check user] Request errónea: se han encontrado {} errores", errors.size());
-		response.setOpCode("400");
-		response.setErrors(errors);
-		return new ResponseEntity<HttpResponse>(response, HttpStatus.BAD_REQUEST);
+		((HttpResponse) response).setOpCode("400");
+		((HttpResponse) response).setErrors(errors);
+		return new ResponseEntity<T>(response, HttpStatus.BAD_REQUEST);
 	}
 }

@@ -4,6 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter @Setter
-public class AccountCreatedMailTemplate {
-	private String accessKey;
+public class PasswordUpdateRequestMailTemplate {
+	private String requestCode;
 }
