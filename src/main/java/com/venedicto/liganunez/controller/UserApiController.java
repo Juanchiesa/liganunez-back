@@ -5,7 +5,6 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -69,11 +68,19 @@ public class UserApiController implements UserApi {
         	return HttpUtils.badRequestResponse(log, response, errors);
         }
         
-        log.info("[Password update request] Se recibió una solicitud de acceso de {}", userEmail);
+        log.info("[Password update request] Se recibió una solicitud de {}", userEmail);
     	return handler.requestUserPasswordUpdate(response, userEmail);
     }
 
-    public ResponseEntity<HttpResponse> updateUserPassword(String userId) {
-        return new ResponseEntity<HttpResponse>(HttpStatus.NOT_IMPLEMENTED);
+    public ResponseEntity<HttpResponse> updateUserPassword(String requestCode) {
+    	HttpResponse response = new HttpResponse();
+    	
+    	List<Error> errors = validator.validatePasswordUpdateRequest(requestCode);
+    	if(!errors.isEmpty()) {
+    		return HttpUtils.badRequestResponse(log, response, errors);
+    	}
+    	
+    	log.info("[Password update] Se recibió una solicitud con el código {}", requestCode);
+        return handler.updateUserPassword(response, requestCode);
     }
 }

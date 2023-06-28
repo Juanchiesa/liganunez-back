@@ -1,5 +1,6 @@
 package com.venedicto.liganunez.service;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import javax.security.auth.login.LoginException;
@@ -9,10 +10,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.venedicto.liganunez.exception.RequestExpiredException;
 import com.venedicto.liganunez.model.MailTypes;
+import com.venedicto.liganunez.model.PasswordUpdateRequest;
 import com.venedicto.liganunez.model.UserData;
 import com.venedicto.liganunez.model.http.User;
-import com.venedicto.liganunez.model.mail.AccountCreatedMailTemplate;
+import com.venedicto.liganunez.model.mail.SendPasswordMailTemplate;
 import com.venedicto.liganunez.model.mail.PasswordUpdateRequestMailTemplate;
 import com.venedicto.liganunez.repository.UserRepository;
 import com.venedicto.liganunez.service.external.MailSender;
@@ -42,9 +45,9 @@ public class UserService {
 		
 		userRepository.createUser(id, encodedPassword, user);
 		
-		AccountCreatedMailTemplate mailData = new AccountCreatedMailTemplate();
+		SendPasswordMailTemplate mailData = new SendPasswordMailTemplate();
 		mailData.setAccessKey(password);
-		mailService.sendMail(user.getEmail(), MailTypes.ACCOUNT_CREATED, mailData);
+		mailService.sendMail(user.getEmail(), MailTypes.SEND_PASSWORD, mailData);
 	}
 	
 	public UserData login(String email, String password) throws LoginException {
@@ -67,5 +70,33 @@ public class UserService {
 		PasswordUpdateRequestMailTemplate mailData = new PasswordUpdateRequestMailTemplate();
 		mailData.setRequestCode(code);
 		mailService.sendMail(email, MailTypes.UPDATE_PASSWORD_REQUEST, mailData);
+	}
+	
+	public String getPasswordUpdateRequest(String requestCode) {
+		PasswordUpdateRequest request = userRepository.getPasswordUpdateRequest(requestCode);
+		
+		if(LocalDateTime.now().isAfter(request.getCreationDate().plusMinutes(30))) {
+			userRepository.deletePasswordUpdateRequest(requestCode);
+			throw new RequestExpiredException("Solicitud vencida");
+		}
+		
+		return request.getUserEmail();
+	}
+	
+	public void generateNewPassword(String requestCode, String userEmail) {
+		UserData user = userRepository.getUser(userEmail);
+		
+		String password = NumberUtils.generateRandomNumber(6);
+		String encodedPassword = authService.encodePassword(password);
+		log.debug("[Password update] Password asignada correctamente");
+		
+		userRepository.updateUserPassword(userEmail, encodedPassword);
+		
+		SendPasswordMailTemplate mailData = new SendPasswordMailTemplate();
+		mailData.setAccessKey(password);
+		mailData.setOldAccessKey(user.getData().getAccessKey());
+		mailService.sendMail(userEmail, MailTypes.SEND_NEW_PASSWORD, mailData);
+		
+		userRepository.deletePasswordUpdateRequest(requestCode);
 	}
 }

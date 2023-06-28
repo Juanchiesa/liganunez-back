@@ -52,6 +52,16 @@ public class UserValidator extends Validator {
 		return errors;
 	}
 	
+	public List<Error> validatePasswordUpdateRequest(String requestCode) {
+		List<Error> errors = new ArrayList<>();
+		
+		if(stringNullOrEmpty(requestCode)) {
+			errors.add(HttpUtils.generateError(ErrorCodes.LN0011));
+		}
+		
+		return errors;
+	}
+	
 	private boolean stringNullOrEmpty(String value) {
 		return value == null || value.isEmpty();
 	}

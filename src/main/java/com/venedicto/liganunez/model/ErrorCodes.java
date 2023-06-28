@@ -14,7 +14,10 @@ public enum ErrorCodes {
 	LN0007("LN", "0007", "El campo 'contraseña' no puede estar vacío"),
 	LN0008("LN", "0008", "El usuario no se encuentra registrado"),
 	LN0009("LN", "0009", "Clave incorrecta"),
-	LN0010("LN", "0010", "Ya se generó una solicitud para actualizar la contraseña");
+	LN0010("LN", "0010", "Ya se generó una solicitud para actualizar la contraseña"),
+	LN0011("LN", "0011", "El código de solicitud no puede estar vacío"),
+	LN0012("LN", "0012", "El código de solicitud ingresado es inexistente"),
+	LN0013("LN", "0013", "El código de solicitud está vencido");
 	
 	private String id;
 	private String code;

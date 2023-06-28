@@ -7,8 +7,10 @@ import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Repository;
 
+import com.venedicto.liganunez.model.PasswordUpdateRequest;
 import com.venedicto.liganunez.model.UserData;
 import com.venedicto.liganunez.model.http.User;
+import com.venedicto.liganunez.repository.mappers.PasswordUpdateRequestRowMapper;
 import com.venedicto.liganunez.repository.mappers.UserRowMapper;
 
 @Repository
@@ -21,7 +23,9 @@ public class UserRepository {
 	private static final String CREATE_USER = "INSERT INTO users(user_id, user_email, user_password, user_name, user_age, user_address) VALUES(?, ?, ?, ?, ?, ?)";
 	private static final String DELETE_PASSWORD_UPDATE_REQUEST = "DELETE FROM password_update_requests WHERE request_code = ?";
 	private static final String DELETE_USER = "DELETE FROM users WHERE user_email = ?";
+	private static final String SELECT_PASSWORD_UPDATE_REQUEST = "SELECT request_code, request_user, request_creation_date FROM password_update_requests WHERE request_code = ?";
 	private static final String SELECT_USER = "SELECT user_id, user_email, user_password, user_name, user_age, user_address, user_permissions, user_creation_date, user_last_update FROM users WHERE user_email = ?";
+	private static final String UPDATE_USER_PASSWORD = "UPDATE users SET user_password = ? WHERE user_email = ?";
 	
 	@Retryable(retryFor = CannotGetJdbcConnectionException.class, listeners = "dbRetryListeners", maxAttemptsExpression = "${db.retry.attempts}",  backoff = @Backoff(delayExpression = "${db.retry.delay}", maxDelayExpression = "${db.timeout}", multiplier = 1))
 	public int checkUserExistence(String email) {
@@ -39,6 +43,11 @@ public class UserRepository {
 	}
 	
 	@Retryable(retryFor = CannotGetJdbcConnectionException.class, listeners = "dbRetryListeners", maxAttemptsExpression = "${db.retry.attempts}",  backoff = @Backoff(delayExpression = "${db.retry.delay}", maxDelayExpression = "${db.timeout}", multiplier = 1))
+	public void updateUserPassword(String userEmail, String newPassword) {
+		jdbcTemplate.update(UPDATE_USER_PASSWORD, newPassword, userEmail);
+	}
+	
+	@Retryable(retryFor = CannotGetJdbcConnectionException.class, listeners = "dbRetryListeners", maxAttemptsExpression = "${db.retry.attempts}",  backoff = @Backoff(delayExpression = "${db.retry.delay}", maxDelayExpression = "${db.timeout}", multiplier = 1))
 	public void deleteUser(String email) {
 		jdbcTemplate.update(DELETE_USER, email);
 	}
@@ -46,6 +55,11 @@ public class UserRepository {
 	@Retryable(retryFor = CannotGetJdbcConnectionException.class, listeners = "dbRetryListeners", maxAttemptsExpression = "${db.retry.attempts}",  backoff = @Backoff(delayExpression = "${db.retry.delay}", maxDelayExpression = "${db.timeout}", multiplier = 1))
 	public void createPasswordUpdateRequest(String userEmail, String code) {
 		jdbcTemplate.update(CREATE_PASSWORD_UPDATE_REQUEST, code, userEmail);
+	}
+	
+	@Retryable(retryFor = CannotGetJdbcConnectionException.class, listeners = "dbRetryListeners", maxAttemptsExpression = "${db.retry.attempts}",  backoff = @Backoff(delayExpression = "${db.retry.delay}", maxDelayExpression = "${db.timeout}", multiplier = 1))
+	public PasswordUpdateRequest getPasswordUpdateRequest(String requestCode) {
+		return jdbcTemplate.queryForObject(SELECT_PASSWORD_UPDATE_REQUEST, new PasswordUpdateRequestRowMapper(), requestCode);
 	}
 	
 	@Retryable(retryFor = CannotGetJdbcConnectionException.class, listeners = "dbRetryListeners", maxAttemptsExpression = "${db.retry.attempts}",  backoff = @Backoff(delayExpression = "${db.retry.delay}", maxDelayExpression = "${db.timeout}", multiplier = 1))

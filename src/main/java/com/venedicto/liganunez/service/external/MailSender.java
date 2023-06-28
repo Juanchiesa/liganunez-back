@@ -44,6 +44,7 @@ public class MailSender {
 		headers.add("Authorization", apiKey);
 		
 		MultiValueMap<String, String> map= new LinkedMultiValueMap<>();
+		map.add("from", sender);
 		map.add("to", receiver);
 		map.add("subject", mailType.getSubject());
 		map.add("project", "ln");

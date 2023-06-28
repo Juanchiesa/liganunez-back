@@ -13,6 +13,7 @@ import org.springframework.jdbc.CannotGetJdbcConnectionException;
 import org.springframework.stereotype.Component;
 
 import com.venedicto.liganunez.exception.MailSenderException;
+import com.venedicto.liganunez.exception.RequestExpiredException;
 import com.venedicto.liganunez.model.ErrorCodes;
 import com.venedicto.liganunez.model.UserData;
 import com.venedicto.liganunez.model.http.HttpResponse;
@@ -102,6 +103,11 @@ public class UserApiHandler {
 			httpStatus = HttpStatus.OK;
 			response.setOpCode("200");
 			log.debug("[Login] Acceso aprobado");
+		} catch(CannotGetJdbcConnectionException e) {
+			httpStatus = HttpStatus.SERVICE_UNAVAILABLE;
+			response.setOpCode("503");
+			response.addErrorsItem(HttpUtils.generateError(ErrorCodes.LN0002));
+			log.error("[Login] No se pudo establecer conexión con la base de datos", e);
 		} catch(EmptyResultDataAccessException e) {
 			httpStatus = HttpStatus.NOT_FOUND;
 			response.setOpCode("404");
@@ -135,16 +141,59 @@ public class UserApiHandler {
 			response.setOpCode("400");
 			response.addErrorsItem(HttpUtils.generateError(ErrorCodes.LN0010));
 			log.error("[Password update request] Datos duplicados", e);
+		} catch(CannotGetJdbcConnectionException e) {
+			httpStatus = HttpStatus.SERVICE_UNAVAILABLE;
+			response.setOpCode("503");
+			response.addErrorsItem(HttpUtils.generateError(ErrorCodes.LN0002));
+			log.error("[Password update request] No se pudo establecer conexión con la base de datos", e);
 		} catch(MailSenderException e) {
 			httpStatus = HttpStatus.SERVICE_UNAVAILABLE;
 			response.setOpCode("503");
 			response.addErrorsItem(HttpUtils.generateError(ErrorCodes.LN0002));
-			log.error("[Create user] No se pudo establecer conexión con el servicio de correo electrónico", e);
+			log.error("[Password update request] No se pudo establecer conexión con el servicio de correo electrónico", e);
 		} catch(Exception e) {
 			httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
 			response.setOpCode("500");
 			response.addErrorsItem(HttpUtils.generateError(ErrorCodes.LN0000));
 			log.error("[Password update request] Ocurrió un error inesperado", e);
+		}
+		
+		return new ResponseEntity<HttpResponse>(response, httpStatus);
+	}
+
+	public ResponseEntity<HttpResponse> updateUserPassword(HttpResponse response, String requestCode) {
+		HttpStatus httpStatus;
+		
+		try {
+			String userEmail = userService.getPasswordUpdateRequest(requestCode);
+			userService.generateNewPassword(requestCode, userEmail);
+			httpStatus = HttpStatus.OK;
+			response.setOpCode("200");
+		} catch(EmptyResultDataAccessException e) {
+			httpStatus = HttpStatus.NOT_FOUND;
+			response.setOpCode("404");
+			response.addErrorsItem(HttpUtils.generateError(ErrorCodes.LN0012));
+			log.error("[Password update] El código ingresado es inexistente", e);
+		} catch(RequestExpiredException e) {
+			httpStatus = HttpStatus.BAD_REQUEST;
+			response.setOpCode("400");
+			response.addErrorsItem(HttpUtils.generateError(ErrorCodes.LN0013));
+			log.error("[Password update] El código ingresado está vencido", e);
+		} catch(CannotGetJdbcConnectionException e) {
+			httpStatus = HttpStatus.SERVICE_UNAVAILABLE;
+			response.setOpCode("503");
+			response.addErrorsItem(HttpUtils.generateError(ErrorCodes.LN0002));
+			log.error("[Password update] No se pudo establecer conexión con la base de datos", e);
+		} catch(MailSenderException e) {
+			httpStatus = HttpStatus.SERVICE_UNAVAILABLE;
+			response.setOpCode("503");
+			response.addErrorsItem(HttpUtils.generateError(ErrorCodes.LN0002));
+			log.error("[Password update] No se pudo establecer conexión con el servicio de correo electrónico", e);
+		} catch(Exception e) {
+			httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+			response.setOpCode("500");
+			response.addErrorsItem(HttpUtils.generateError(ErrorCodes.LN0000));
+			log.error("[Password update] Ocurrió un error inesperado", e);
 		}
 		
 		return new ResponseEntity<HttpResponse>(response, httpStatus);
