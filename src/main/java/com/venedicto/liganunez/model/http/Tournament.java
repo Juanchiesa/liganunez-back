@@ -14,15 +14,15 @@ import io.swagger.v3.oas.annotations.media.Schema;
  * Tournament
  */
 @Validated
-@javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2023-06-18T18:56:59.203396144Z[GMT]")
+@javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2023-06-29T13:59:06.488781089Z[GMT]")
 
 
 public class Tournament   {
   @JsonProperty("id")
   private String id = null;
 
-  @JsonProperty("code")
-  private Integer code = null;
+  @JsonProperty("logo")
+  private String logo = null;
 
   @JsonProperty("name")
   private String name = null;
@@ -79,23 +79,23 @@ public class Tournament   {
     this.id = id;
   }
 
-  public Tournament code(Integer code) {
-    this.code = code;
+  public Tournament logo(String logo) {
+    this.logo = logo;
     return this;
   }
 
   /**
-   * Get code
-   * @return code
+   * Get logo
+   * @return logo
    **/
-  @Schema(example = "456509", description = "")
+  @Schema(example = "http://google.com/images/ayudameloco", description = "")
   
-    public Integer getCode() {
-    return code;
+    public String getLogo() {
+    return logo;
   }
 
-  public void setCode(Integer code) {
-    this.code = code;
+  public void setLogo(String logo) {
+    this.logo = logo;
   }
 
   public Tournament name(String name) {
@@ -147,14 +147,14 @@ public class Tournament   {
     }
     Tournament tournament = (Tournament) o;
     return Objects.equals(this.id, tournament.id) &&
-        Objects.equals(this.code, tournament.code) &&
+        Objects.equals(this.logo, tournament.logo) &&
         Objects.equals(this.name, tournament.name) &&
         Objects.equals(this.type, tournament.type);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, code, name, type);
+    return Objects.hash(id, logo, name, type);
   }
 
   @Override
@@ -163,7 +163,7 @@ public class Tournament   {
     sb.append("class Tournament {\n");
     
     sb.append("    id: ").append(toIndentedString(id)).append("\n");
-    sb.append("    code: ").append(toIndentedString(code)).append("\n");
+    sb.append("    logo: ").append(toIndentedString(logo)).append("\n");
     sb.append("    name: ").append(toIndentedString(name)).append("\n");
     sb.append("    type: ").append(toIndentedString(type)).append("\n");
     sb.append("}");
