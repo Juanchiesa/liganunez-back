@@ -17,8 +17,8 @@ public class TournamentRepository {
 	@Autowired
     private JdbcTemplate jdbcTemplate;
 	
-	public final static String SELECT_TOURNAMENT = "SELECT tournament_id, tournament_code, tournament_name, tournament_type FROM tournaments WHERE tournament_id = ?";
-	public final static String SELECT_TOURNAMENTS = "SELECT tournament_id, tournament_code, tournament_name, tournament_type FROM tournaments";
+	public final static String SELECT_TOURNAMENT = "SELECT tournament_id, tournament_name, tournament_type FROM tournaments WHERE tournament_id = ?";
+	public final static String SELECT_TOURNAMENTS = "SELECT tournament_id, tournament_name, tournament_type FROM tournaments";
 	
 	@Retryable(retryFor = CannotGetJdbcConnectionException.class, listeners = "dbRetryListeners", maxAttemptsExpression = "${db.retry.attempts}",  backoff = @Backoff(delayExpression = "${db.retry.delay}", maxDelayExpression = "${db.timeout}", multiplier = 1))
 	public List<Tournament> getTournaments() {

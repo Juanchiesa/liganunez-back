@@ -13,7 +13,6 @@ public class TournamentRowMapper implements RowMapper<Tournament> {
 		Tournament tournament = new Tournament();
 		
 		tournament.setId(rs.getString("tournament_id"));
-		tournament.setCode(rs.getInt("tournament_code"));
 		tournament.setName(rs.getString("tournament_name"));
 		tournament.setType(Tournament.TypeEnum.fromValue(rs.getString("tournament_type")));
 		

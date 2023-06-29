@@ -24,9 +24,6 @@ public class Tournament   {
   @JsonProperty("logo")
   private String logo = null;
 
-  @JsonProperty("code")
-  private Integer code = null;
-
   @JsonProperty("name")
   private String name = null;
 
@@ -101,25 +98,6 @@ public class Tournament   {
     this.logo = logo;
   }
 
-  public Tournament code(Integer code) {
-    this.code = code;
-    return this;
-  }
-
-  /**
-   * Get code
-   * @return code
-   **/
-  @Schema(example = "456509", description = "")
-  
-    public Integer getCode() {
-    return code;
-  }
-
-  public void setCode(Integer code) {
-    this.code = code;
-  }
-
   public Tournament name(String name) {
     this.name = name;
     return this;
@@ -170,14 +148,13 @@ public class Tournament   {
     Tournament tournament = (Tournament) o;
     return Objects.equals(this.id, tournament.id) &&
         Objects.equals(this.logo, tournament.logo) &&
-        Objects.equals(this.code, tournament.code) &&
         Objects.equals(this.name, tournament.name) &&
         Objects.equals(this.type, tournament.type);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, logo, code, name, type);
+    return Objects.hash(id, logo, name, type);
   }
 
   @Override
@@ -187,7 +164,6 @@ public class Tournament   {
     
     sb.append("    id: ").append(toIndentedString(id)).append("\n");
     sb.append("    logo: ").append(toIndentedString(logo)).append("\n");
-    sb.append("    code: ").append(toIndentedString(code)).append("\n");
     sb.append("    name: ").append(toIndentedString(name)).append("\n");
     sb.append("    type: ").append(toIndentedString(type)).append("\n");
     sb.append("}");
