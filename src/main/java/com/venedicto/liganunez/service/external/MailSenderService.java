@@ -21,7 +21,7 @@ import com.venedicto.liganunez.exception.MailSenderException;
 import com.venedicto.liganunez.model.MailTypes;
 
 @Service
-public class MailSender {
+public class MailSenderService {
 	private RestTemplate restTemplate;
 	@Autowired
 	private MailSenderException mailSenderException;
@@ -32,7 +32,7 @@ public class MailSender {
 	@Value("${mail.sender.host}")
 	private String sender;
 	
-	public MailSender() {
+	public MailSenderService() {
 		this.restTemplate = new RestTemplate();
 	}
 	

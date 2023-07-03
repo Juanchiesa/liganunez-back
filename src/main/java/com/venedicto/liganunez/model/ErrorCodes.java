@@ -19,7 +19,9 @@ public enum ErrorCodes {
 	LN0012("LN", "0012", "El código de solicitud ingresado es inexistente"),
 	LN0013("LN", "0013", "El código de solicitud está vencido"),
 	LN0014("LN", "0014", "El torneo ingresado es inexistente"),
-	LN0015("LN", "0015", "Acceso no autorizado");
+	LN0015("LN", "0015", "Acceso no autorizado"),
+	LN0016("LN", "0016", "Sesión expirada"),
+	LN0017("LN", "0017", "No se pudo encontrar la imagen");
 	
 	private String id;
 	private String code;

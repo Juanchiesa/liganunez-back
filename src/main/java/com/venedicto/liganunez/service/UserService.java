@@ -18,7 +18,7 @@ import com.venedicto.liganunez.model.http.User;
 import com.venedicto.liganunez.model.mail.SendPasswordMailTemplate;
 import com.venedicto.liganunez.model.mail.PasswordUpdateRequestMailTemplate;
 import com.venedicto.liganunez.repository.UserRepository;
-import com.venedicto.liganunez.service.external.MailSender;
+import com.venedicto.liganunez.service.external.MailSenderService;
 import com.venedicto.liganunez.utils.NumberUtils;
 
 @Service
@@ -27,7 +27,7 @@ public class UserService {
 	@Autowired
 	private AuthService authService;
 	@Autowired
-	private MailSender mailService;
+	private MailSenderService mailService;
 	@Autowired
 	private UserRepository userRepository;
 	

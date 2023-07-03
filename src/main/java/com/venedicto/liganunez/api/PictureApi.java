@@ -31,7 +31,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
-@javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2023-06-30T19:42:06.417708714Z[GMT]")
+@javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2023-07-03T17:50:32.647490955Z[GMT]")
 @Validated
 public interface PictureApi {
 
@@ -44,10 +44,10 @@ public interface PictureApi {
         @ApiResponse(responseCode = "500", description = "Error del servidor", content = @Content(mediaType = "application/json", schema = @Schema(implementation = HttpResponse.class))),
         
         @ApiResponse(responseCode = "503", description = "Base de datos no disponible", content = @Content(mediaType = "application/json", schema = @Schema(implementation = HttpResponse.class))) })
-    @RequestMapping(value = "/picture/{id}",
+    @RequestMapping(value = "/picture/{tournamentId}/{id}",
         produces = { "application/json" }, 
         method = RequestMethod.DELETE)
-    ResponseEntity<HttpResponse> deletePicture(@Parameter(in = ParameterIn.PATH, description = "ID de la imagen", required=true, schema=@Schema()) @PathVariable("id") String id, @Parameter(in = ParameterIn.HEADER, description = "Token de autenticación del usuario" ,schema=@Schema()) @RequestHeader(value="token", required=false) String token);
+    ResponseEntity<HttpResponse> deletePicture(@Parameter(in = ParameterIn.PATH, description = "ID del torneo al que corresponde la imagen", required=true, schema=@Schema()) @PathVariable("tournamentId") String tournamentId, @Parameter(in = ParameterIn.PATH, description = "ID de la imagen", required=true, schema=@Schema()) @PathVariable("id") String id, @Parameter(in = ParameterIn.HEADER, description = "Token de autenticación del usuario" ,schema=@Schema()) @RequestHeader(value="token", required=false) String token);
 
 
     @Operation(summary = "Obtención de fotos", description = "", tags={ "picture" })
