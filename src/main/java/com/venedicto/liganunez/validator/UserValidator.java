@@ -61,8 +61,4 @@ public class UserValidator extends Validator {
 		
 		return errors;
 	}
-	
-	private boolean stringNullOrEmpty(String value) {
-		return value == null || value.isEmpty();
-	}
 }

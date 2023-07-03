@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import com.venedicto.liganunez.model.http.GetPicturesHttpResponse;
 import com.venedicto.liganunez.model.http.HttpResponse;
 import com.venedicto.liganunez.model.http.Picture;
+import com.venedicto.liganunez.model.http.UploadPicturesHttpResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -30,7 +31,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
-@javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2023-06-18T21:03:46.370876498Z[GMT]")
+@javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2023-06-30T19:42:06.417708714Z[GMT]")
 @Validated
 public interface PictureApi {
 
@@ -58,15 +59,15 @@ public interface PictureApi {
         @ApiResponse(responseCode = "500", description = "Error del servidor", content = @Content(mediaType = "application/json", schema = @Schema(implementation = HttpResponse.class))),
         
         @ApiResponse(responseCode = "503", description = "Base de datos/AWS no disponibles", content = @Content(mediaType = "application/json", schema = @Schema(implementation = HttpResponse.class))) })
-    @RequestMapping(value = "/picture",
+    @RequestMapping(value = "/picture/{tournamentId}",
         produces = { "application/json" }, 
         method = RequestMethod.GET)
-    ResponseEntity<List<GetPicturesHttpResponse>> getPictures();
+    ResponseEntity<List<GetPicturesHttpResponse>> getPictures(@Parameter(in = ParameterIn.PATH, description = "", required=true, schema=@Schema()) @PathVariable("tournamentId") String tournamentId);
 
 
     @Operation(summary = "Carga de fotos", description = "", tags={ "picture" })
     @ApiResponses(value = { 
-        @ApiResponse(responseCode = "200", description = "Imágenes almacenadas con éxito", content = @Content(mediaType = "application/json", schema = @Schema(implementation = HttpResponse.class))),
+        @ApiResponse(responseCode = "200", description = "Imágenes almacenadas con éxito", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UploadPicturesHttpResponse.class))),
         
         @ApiResponse(responseCode = "400", description = "Error en la request", content = @Content(mediaType = "application/json", schema = @Schema(implementation = HttpResponse.class))),
         
@@ -77,7 +78,6 @@ public interface PictureApi {
         produces = { "application/json" }, 
         consumes = { "application/json" }, 
         method = RequestMethod.POST)
-    ResponseEntity<HttpResponse> uploadPictures(@Parameter(in = ParameterIn.HEADER, description = "Token de autenticación del usuario" ,schema=@Schema()) @RequestHeader(value="token", required=false) String token, @Parameter(in = ParameterIn.DEFAULT, description = "Información de las imágenes", schema=@Schema()) @Valid @RequestBody List<Picture> body);
+    ResponseEntity<UploadPicturesHttpResponse> uploadPictures(@Parameter(in = ParameterIn.HEADER, description = "Token de autenticación del usuario" ,schema=@Schema()) @RequestHeader(value="token", required=false) String token, @Parameter(in = ParameterIn.DEFAULT, description = "Información de las imágenes", schema=@Schema()) @Valid @RequestBody List<Picture> body);
 
 }
-

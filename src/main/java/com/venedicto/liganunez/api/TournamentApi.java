@@ -8,7 +8,6 @@ package com.venedicto.liganunez.api;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -41,7 +40,7 @@ public interface TournamentApi {
     @RequestMapping(value = "/tournament/{id}",
         produces = { "application/json" }, 
         method = RequestMethod.GET)
-    ResponseEntity<GetTournamentHttpResponse> getTournamentData(@Parameter(in = ParameterIn.PATH, description = "ID del torneo", required=true, schema=@Schema()) @PathVariable("id") String id, @Parameter(in = ParameterIn.HEADER, description = "Código de acceso" ,required=true,schema=@Schema()) @RequestHeader(value="code", required=true) String code);
+    ResponseEntity<GetTournamentHttpResponse> getTournamentData(@Parameter(in = ParameterIn.PATH, description = "ID del torneo", required=true, schema=@Schema()) @PathVariable("id") String id);
 
 
     @Operation(summary = "Carga de torneos", description = "", tags={ "tournament" })

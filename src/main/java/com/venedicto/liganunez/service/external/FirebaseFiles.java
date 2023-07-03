@@ -1,10 +1,15 @@
 package com.venedicto.liganunez.service.external;
 
+import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Base64;
 
 import javax.annotation.PostConstruct;
 
+import org.apache.commons.imaging.ImageInfo;
+import org.apache.commons.imaging.ImageReadException;
+import org.apache.commons.imaging.Imaging;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -40,5 +45,16 @@ public class FirebaseFiles {
 		Blob blob = bucket.get(tournamentId+"/"+filename);
 		blob.createAcl(Acl.of(Acl.User.ofAllUsers(), Acl.Role.READER));
 		return "https://storage.googleapis.com/" + blob.getBucket() + "/" + blob.getName();
+	}
+	
+	public void uploadImage(String id, String tournamentId, String file) throws IOException, ImageReadException {
+		//Decode the file
+		byte[] decodedFile = Base64.getDecoder().decode(file);
+		
+		//Check if is an image
+		Imaging.getImageInfo(new ByteArrayInputStream(decodedFile), null);
+		
+		//Upload on the server
+		bucket.create(tournamentId+"/"+id, new ByteArrayInputStream(decodedFile));
 	}
 }
