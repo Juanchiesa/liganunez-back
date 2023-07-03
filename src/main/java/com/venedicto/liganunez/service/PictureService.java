@@ -1,5 +1,6 @@
 package com.venedicto.liganunez.service;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,13 +10,13 @@ import org.springframework.stereotype.Service;
 import com.venedicto.liganunez.model.http.Picture;
 import com.venedicto.liganunez.model.http.PictureInfo;
 import com.venedicto.liganunez.repository.PictureRepository;
-import com.venedicto.liganunez.service.external.FirebaseFiles;
+import com.venedicto.liganunez.service.external.FirebaseService;
 import com.venedicto.liganunez.validator.PictureValidator;
 
 @Service
 public class PictureService {
 	@Autowired
-	private FirebaseFiles filesService;
+	private FirebaseService filesService;
 	@Autowired
 	private PictureRepository pictureRepository;
 	@Autowired
@@ -58,5 +59,10 @@ public class PictureService {
 		pictureInfo.setId(id);
 		pictureInfo.setStatus(status);
 		return pictureInfo;
+	}
+	
+	public void deletePicture(String id, String tournamentId) throws FileNotFoundException {
+		filesService.deleteImage(tournamentId, id);
+		pictureRepository.deletePicture(id);
 	}
 }

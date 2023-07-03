@@ -1,5 +1,6 @@
 package com.venedicto.liganunez.handler;
 
+import java.io.FileNotFoundException;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Component;
 
 import com.venedicto.liganunez.model.ErrorCodes;
 import com.venedicto.liganunez.model.UserData;
+import com.venedicto.liganunez.model.http.HttpResponse;
 import com.venedicto.liganunez.model.http.Picture;
 import com.venedicto.liganunez.model.http.PictureInfo;
 import com.venedicto.liganunez.model.http.UploadPicturesHttpResponse;
@@ -19,6 +21,7 @@ import com.venedicto.liganunez.service.AuthService;
 import com.venedicto.liganunez.service.PictureService;
 import com.venedicto.liganunez.utils.HttpUtils;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 
 @Component
@@ -34,7 +37,7 @@ public class PictureApiHandler {
 		
 		try {
 			UserData user = authService.readSessionToken(token);
-			log.trace("[Upload pictures] El usuario {} obtuvo acceso para realizar la carga de las imágenes", user.getId());
+			log.trace("[Upload pictures] El usuario {} recibió acceso para cargar las imágenes", user.getId());
 			
 			List<PictureInfo> picturesInfo = pictureService.uploadPicture(pictures);
 			response.setData(picturesInfo);
@@ -46,6 +49,11 @@ public class PictureApiHandler {
 			response.setOpCode("403");
 			response.addErrorsItem(HttpUtils.generateError(ErrorCodes.LN0015));
 			log.error("[Upload pictures] Token inválido", e);
+		} catch(ExpiredJwtException e) {
+			httpStatus = HttpStatus.UNAUTHORIZED;
+			response.setOpCode("401");
+			response.addErrorsItem(HttpUtils.generateError(ErrorCodes.LN0016));
+			log.error("[Upload pictures] Token expirado", e);
 		} catch(CannotGetJdbcConnectionException e) {
 			httpStatus = HttpStatus.SERVICE_UNAVAILABLE;
 			response.setOpCode("503");
@@ -59,5 +67,41 @@ public class PictureApiHandler {
 		}
 		
 		return new ResponseEntity<UploadPicturesHttpResponse>(response, httpStatus);
+	}
+	
+	public ResponseEntity<HttpResponse> deletePicture(HttpResponse response, String token, String tournamentId, String id) {
+		HttpStatus httpStatus;
+		
+		try {
+			UserData user = authService.readSessionToken(token);
+			log.trace("[Delete picture] El usuario {} recibió acceso para eliminar las imágenes", user.getId());
+			
+			pictureService.deletePicture(id, tournamentId);
+			
+			httpStatus = HttpStatus.OK;
+			response.setOpCode("200");
+		} catch(MalformedJwtException | IllegalArgumentException e) {
+			httpStatus = HttpStatus.FORBIDDEN;
+			response.setOpCode("403");
+			response.addErrorsItem(HttpUtils.generateError(ErrorCodes.LN0015));
+			log.error("[Delete picture] Token inválido", e);
+		} catch(ExpiredJwtException e) {
+			httpStatus = HttpStatus.UNAUTHORIZED;
+			response.setOpCode("401");
+			response.addErrorsItem(HttpUtils.generateError(ErrorCodes.LN0016));
+			log.error("[Delete picture] Token expirado", e);
+		} catch(FileNotFoundException e) {
+			httpStatus = HttpStatus.NOT_FOUND;
+			response.setOpCode("404");
+			response.addErrorsItem(HttpUtils.generateError(ErrorCodes.LN0017));
+			log.error("[Delete picture] Imagen no encontrada", e);
+		} catch(Exception e) {
+			httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+			response.setOpCode("500");
+			response.addErrorsItem(HttpUtils.generateError(ErrorCodes.LN0000));
+			log.error("[Delete picture] Ocurrió un error inesperado", e);
+		}
+		
+		return new ResponseEntity<HttpResponse>(response, httpStatus);
 	}
 }

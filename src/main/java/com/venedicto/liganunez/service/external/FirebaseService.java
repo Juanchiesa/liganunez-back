@@ -2,12 +2,12 @@ package com.venedicto.liganunez.service.external;
 
 import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Base64;
 
 import javax.annotation.PostConstruct;
 
-import org.apache.commons.imaging.ImageInfo;
 import org.apache.commons.imaging.ImageReadException;
 import org.apache.commons.imaging.Imaging;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,13 +16,14 @@ import org.springframework.stereotype.Service;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.storage.Acl;
 import com.google.cloud.storage.Blob;
+import com.google.cloud.storage.Blob.BlobSourceOption;
 import com.google.cloud.storage.Bucket;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.cloud.StorageClient;
 
 @Service
-public class FirebaseFiles {
+public class FirebaseService {
 	private Bucket bucket;
 	@Value("${firebase.api.url}")
 	private String url;
@@ -41,8 +42,12 @@ public class FirebaseFiles {
 		bucket = StorageClient.getInstance().bucket();
 	}
 	
-	public String getImage(String tournamentId, String filename) {
+	public String getImage(String tournamentId, String filename) throws FileNotFoundException {
 		Blob blob = bucket.get(tournamentId+"/"+filename);
+		if(blob == null) {
+			throw new FileNotFoundException("La imagen no se subió al servidor");
+		}
+		
 		blob.createAcl(Acl.of(Acl.User.ofAllUsers(), Acl.Role.READER));
 		return "https://storage.googleapis.com/" + blob.getBucket() + "/" + blob.getName();
 	}
@@ -56,5 +61,14 @@ public class FirebaseFiles {
 		
 		//Upload on the server
 		bucket.create(tournamentId+"/"+id, new ByteArrayInputStream(decodedFile));
+	}
+	
+	public void deleteImage(String tournamentId, String filename) throws FileNotFoundException {
+		Blob blob = bucket.get(tournamentId+"/"+filename);
+		if(blob == null) {
+			throw new FileNotFoundException("La imagen no se subió al servidor Firebase");
+		}
+		
+		blob.delete(BlobSourceOption.generationMatch());
 	}
 }

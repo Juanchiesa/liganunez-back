@@ -15,18 +15,18 @@ import com.venedicto.liganunez.model.http.GetPicturesHttpResponse;
 import com.venedicto.liganunez.model.http.HttpResponse;
 import com.venedicto.liganunez.model.http.Picture;
 import com.venedicto.liganunez.model.http.UploadPicturesHttpResponse;
-import com.venedicto.liganunez.validator.PictureValidator;
 
 @RestController
 public class PictureApiController implements PictureApi {
     private static final Logger log = LoggerFactory.getLogger(PictureApiController.class);
     @Autowired
     private PictureApiHandler handler;
-    @Autowired
-    private PictureValidator validator;
     
-    public ResponseEntity<HttpResponse> deletePicture(String id, String token) {
-        return new ResponseEntity<HttpResponse>(HttpStatus.NOT_IMPLEMENTED);
+    public ResponseEntity<HttpResponse> deletePicture(String tournamentId, String id, String token) {
+    	HttpResponse response = new HttpResponse();
+    	
+    	log.info("[Delete picture] Se solicitó eliminar la imagen {} correspondiente al torneo {}", id, tournamentId);
+        return handler.deletePicture(response, token, tournamentId, id);
     }
 
 	public ResponseEntity<List<GetPicturesHttpResponse>> getPictures(String tournamentId) {
