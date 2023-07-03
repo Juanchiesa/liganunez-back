@@ -4,6 +4,8 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +17,7 @@ import com.venedicto.liganunez.validator.PictureValidator;
 
 @Service
 public class PictureService {
+	private static final Logger log = LoggerFactory.getLogger(PictureService.class);
 	@Autowired
 	private FirebaseService filesService;
 	@Autowired
@@ -64,5 +67,18 @@ public class PictureService {
 	public void deletePicture(String id, String tournamentId) throws FileNotFoundException {
 		filesService.deleteImage(tournamentId, id);
 		pictureRepository.deletePicture(id);
+	}
+	
+	public List<Picture> getPictures(String tournamentId) {
+		List<Picture> pictures = pictureRepository.getPictures(tournamentId);
+		pictures.forEach(picture -> {
+			try {
+				picture.setFile(filesService.getImage(tournamentId, picture.getId()));
+			} catch (FileNotFoundException e) {
+				log.error("Error inesperado con la imagen {}", picture.getId(), e);
+			}
+		});
+		
+		return pictures;
 	}
 }

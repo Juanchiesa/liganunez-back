@@ -62,7 +62,7 @@ public interface PictureApi {
     @RequestMapping(value = "/picture/{tournamentId}",
         produces = { "application/json" }, 
         method = RequestMethod.GET)
-    ResponseEntity<List<GetPicturesHttpResponse>> getPictures(@Parameter(in = ParameterIn.PATH, description = "", required=true, schema=@Schema()) @PathVariable("tournamentId") String tournamentId);
+    ResponseEntity<GetPicturesHttpResponse> getPictures(@Parameter(in = ParameterIn.PATH, description = "", required=true, schema=@Schema()) @PathVariable("tournamentId") String tournamentId);
 
 
     @Operation(summary = "Carga de fotos", description = "", tags={ "picture" })
