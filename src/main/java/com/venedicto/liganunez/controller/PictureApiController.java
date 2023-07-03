@@ -5,7 +5,6 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -29,8 +28,11 @@ public class PictureApiController implements PictureApi {
         return handler.deletePicture(response, token, tournamentId, id);
     }
 
-	public ResponseEntity<List<GetPicturesHttpResponse>> getPictures(String tournamentId) {
-        return new ResponseEntity<List<GetPicturesHttpResponse>>(HttpStatus.NOT_IMPLEMENTED);
+	public ResponseEntity<GetPicturesHttpResponse> getPictures(String tournamentId) {
+		GetPicturesHttpResponse response = new GetPicturesHttpResponse();
+		
+		log.info("[Get pictures] Se solicitaron las imagenes del torneo {}", tournamentId);
+        return handler.getPictures(response, tournamentId);
     }
 
     public ResponseEntity<UploadPicturesHttpResponse> uploadPictures(String token, List<Picture> body) {

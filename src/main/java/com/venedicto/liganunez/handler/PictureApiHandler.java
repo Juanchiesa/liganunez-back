@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 
 import com.venedicto.liganunez.model.ErrorCodes;
 import com.venedicto.liganunez.model.UserData;
+import com.venedicto.liganunez.model.http.GetPicturesHttpResponse;
 import com.venedicto.liganunez.model.http.HttpResponse;
 import com.venedicto.liganunez.model.http.Picture;
 import com.venedicto.liganunez.model.http.PictureInfo;
@@ -42,8 +43,8 @@ public class PictureApiHandler {
 			List<PictureInfo> picturesInfo = pictureService.uploadPicture(pictures);
 			response.setData(picturesInfo);
 			
-			httpStatus = HttpStatus.CREATED;
-			response.setOpCode("201");
+			httpStatus = HttpStatus.OK;
+			response.setOpCode("200");
 		} catch(MalformedJwtException | IllegalArgumentException e) {
 			httpStatus = HttpStatus.FORBIDDEN;
 			response.setOpCode("403");
@@ -95,6 +96,11 @@ public class PictureApiHandler {
 			response.setOpCode("404");
 			response.addErrorsItem(HttpUtils.generateError(ErrorCodes.LN0017));
 			log.error("[Delete picture] Imagen no encontrada", e);
+		} catch(CannotGetJdbcConnectionException e) {
+			httpStatus = HttpStatus.SERVICE_UNAVAILABLE;
+			response.setOpCode("503");
+			response.addErrorsItem(HttpUtils.generateError(ErrorCodes.LN0002));
+			log.error("[Delete picture] No se pudo establecer conexión con la base de datos", e);
 		} catch(Exception e) {
 			httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
 			response.setOpCode("500");
@@ -103,5 +109,28 @@ public class PictureApiHandler {
 		}
 		
 		return new ResponseEntity<HttpResponse>(response, httpStatus);
+	}
+	
+	public ResponseEntity<GetPicturesHttpResponse> getPictures(GetPicturesHttpResponse response, String tournamentId) {
+		HttpStatus httpStatus;
+		
+		try {
+			List<Picture> pictures = pictureService.getPictures(tournamentId);
+			response.setData(pictures);
+			httpStatus = HttpStatus.OK;
+			response.setOpCode("200");
+		} catch(CannotGetJdbcConnectionException e) {
+			httpStatus = HttpStatus.SERVICE_UNAVAILABLE;
+			response.setOpCode("503");
+			response.addErrorsItem(HttpUtils.generateError(ErrorCodes.LN0002));
+			log.error("[Get pictures] No se pudo establecer conexión con la base de datos", e);
+		} catch(Exception e) {
+			httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+			response.setOpCode("500");
+			response.addErrorsItem(HttpUtils.generateError(ErrorCodes.LN0000));
+			log.error("[Get pictures] Ocurrió un error inesperado", e);
+		}
+		
+		return new ResponseEntity<GetPicturesHttpResponse>(response, httpStatus);
 	}
 }
