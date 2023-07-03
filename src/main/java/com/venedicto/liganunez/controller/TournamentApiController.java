@@ -17,7 +17,7 @@ public class TournamentApiController implements TournamentApi {
     @Autowired
     private TournamentApiHandler handler;
     
-    public ResponseEntity<GetTournamentHttpResponse> getTournamentData(String id, String code) {
+    public ResponseEntity<GetTournamentHttpResponse> getTournamentData(String id) {
         GetTournamentHttpResponse response = new GetTournamentHttpResponse();
         log.info("[Get Tournament] Consulta del torneo {}", id );
     	return handler.getTournament(response, id);

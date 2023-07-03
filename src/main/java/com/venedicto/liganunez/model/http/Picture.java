@@ -2,9 +2,6 @@ package com.venedicto.liganunez.model.http;
 
 import java.util.Objects;
 
-import javax.validation.Valid;
-
-import org.springframework.core.io.Resource;
 import org.springframework.validation.annotation.Validated;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -15,7 +12,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
  * Picture
  */
 @Validated
-@javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2023-06-18T18:56:59.203396144Z[GMT]")
+@javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2023-06-30T17:31:40.208117412Z[GMT]")
 
 
 public class Picture   {
@@ -32,7 +29,7 @@ public class Picture   {
   private String place = null;
 
   @JsonProperty("file")
-  private Resource file = null;
+  private String file = null;
 
   public Picture id(String id) {
     this.id = id;
@@ -110,7 +107,7 @@ public class Picture   {
     this.place = place;
   }
 
-  public Picture file(Resource file) {
+  public Picture file(String file) {
     this.file = file;
     return this;
   }
@@ -119,14 +116,13 @@ public class Picture   {
    * Get file
    * @return file
    **/
-  @Schema(example = "[B@3f007cae", description = "")
+  @Schema(example = "bh5aLyZALN4othXL2mByHo1aZA5ts5k/uw/sc7DBngGY......", description = "")
   
-    @Valid
-    public Resource getFile() {
+    public String getFile() {
     return file;
   }
 
-  public void setFile(Resource file) {
+  public void setFile(String file) {
     this.file = file;
   }
 

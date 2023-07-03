@@ -18,7 +18,8 @@ public enum ErrorCodes {
 	LN0011("LN", "0011", "El código de solicitud no puede estar vacío"),
 	LN0012("LN", "0012", "El código de solicitud ingresado es inexistente"),
 	LN0013("LN", "0013", "El código de solicitud está vencido"),
-	LN0014("LN", "0014", "El torneo ingresado es inexistente");
+	LN0014("LN", "0014", "El torneo ingresado es inexistente"),
+	LN0015("LN", "0015", "Acceso no autorizado");
 	
 	private String id;
 	private String code;

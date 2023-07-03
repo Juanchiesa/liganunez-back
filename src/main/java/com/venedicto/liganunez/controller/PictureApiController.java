@@ -14,6 +14,7 @@ import com.venedicto.liganunez.handler.PictureApiHandler;
 import com.venedicto.liganunez.model.http.GetPicturesHttpResponse;
 import com.venedicto.liganunez.model.http.HttpResponse;
 import com.venedicto.liganunez.model.http.Picture;
+import com.venedicto.liganunez.model.http.UploadPicturesHttpResponse;
 import com.venedicto.liganunez.validator.PictureValidator;
 
 @RestController
@@ -28,11 +29,14 @@ public class PictureApiController implements PictureApi {
         return new ResponseEntity<HttpResponse>(HttpStatus.NOT_IMPLEMENTED);
     }
 
-	public ResponseEntity<List<GetPicturesHttpResponse>> getPictures() {
+	public ResponseEntity<List<GetPicturesHttpResponse>> getPictures(String tournamentId) {
         return new ResponseEntity<List<GetPicturesHttpResponse>>(HttpStatus.NOT_IMPLEMENTED);
     }
 
-    public ResponseEntity<HttpResponse> uploadPictures(String token, List<Picture> body) {
-        return new ResponseEntity<HttpResponse>(HttpStatus.NOT_IMPLEMENTED);
+    public ResponseEntity<UploadPicturesHttpResponse> uploadPictures(String token, List<Picture> body) {
+    	UploadPicturesHttpResponse response = new UploadPicturesHttpResponse();
+        
+        log.info("[Upload pictures] Se procederá a subir una cantidad de {} fotos", body.size());
+    	return handler.uploadPicture(response, token, body);
     }
 }

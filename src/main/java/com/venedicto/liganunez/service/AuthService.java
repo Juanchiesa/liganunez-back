@@ -93,10 +93,10 @@ public class AuthService {
 	private String decodeSessionToken(String encodedToken) {
 		StringBuilder decodedTokenBuilder = new StringBuilder();
 		decodedTokenBuilder.append(encodedToken);
-		decodedTokenBuilder.replace(0, -2, "==");
+		decodedTokenBuilder.replace(encodedToken.length()-2, encodedToken.length(), "==");
 		
 		byte[] decodedToken = decodedTokenBuilder.toString().getBytes();
 		
-		return Base64.getDecoder().decode(decodedToken).toString();
+		return new String(Base64.getDecoder().decode(decodedToken));
 	}
 }
