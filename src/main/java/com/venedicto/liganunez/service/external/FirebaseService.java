@@ -48,8 +48,8 @@ public class FirebaseService {
 			throw new FileNotFoundException("La imagen no se subió al servidor");
 		}
 		
-		blob.createAcl(Acl.of(Acl.User.ofAllUsers(), Acl.Role.READER));
-		return "https://storage.googleapis.com/" + blob.getBucket() + "/" + blob.getName();
+		//blob.createAcl(Acl.of(Acl.User.ofAllUsers(), Acl.Role.READER));
+		return Base64.getEncoder().encodeToString(blob.getContent());
 	}
 	
 	public void uploadImage(String id, String tournamentId, String file) throws IOException, ImageReadException {
