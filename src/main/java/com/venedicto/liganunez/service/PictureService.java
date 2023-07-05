@@ -28,7 +28,7 @@ public class PictureService {
 	public List<PictureInfo> uploadPicture(List<Picture> pictures) {
 		List<PictureInfo> picturesInfo = new ArrayList<>();
 		
-		pictures.forEach(picture -> {
+		pictures.stream().parallel().forEach(picture -> {
 			if(pictureValidator.isValidFile(picture)) {
 				//Insert into database
 				try {
@@ -69,8 +69,8 @@ public class PictureService {
 		pictureRepository.deletePicture(id);
 	}
 	
-	public List<Picture> getPictures(String tournamentId) {
-		List<Picture> pictures = pictureRepository.getPictures(tournamentId);
+	public List<Picture> getPictures(String tournamentId, int pageNumber) {
+		List<Picture> pictures = pictureRepository.getPictures(tournamentId, pageNumber);
 		pictures.forEach(picture -> {
 			try {
 				picture.setFile(filesService.getImage(tournamentId, picture.getId()));
