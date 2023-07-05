@@ -28,11 +28,11 @@ public class PictureApiController implements PictureApi {
         return handler.deletePicture(response, token, tournamentId, id);
     }
 
-	public ResponseEntity<GetPicturesHttpResponse> getPictures(String tournamentId) {
+	public ResponseEntity<GetPicturesHttpResponse> getPictures(String tournamentId, Integer pageNumber) {
 		GetPicturesHttpResponse response = new GetPicturesHttpResponse();
 		
 		log.info("[Get pictures] Se solicitaron las imagenes del torneo {}", tournamentId);
-        return handler.getPictures(response, tournamentId);
+        return handler.getPictures(response, tournamentId, pageNumber);
     }
 
     public ResponseEntity<UploadPicturesHttpResponse> uploadPictures(String token, List<Picture> body) {

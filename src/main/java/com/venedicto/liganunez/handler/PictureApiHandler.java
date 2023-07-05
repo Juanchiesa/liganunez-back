@@ -111,12 +111,14 @@ public class PictureApiHandler {
 		return new ResponseEntity<HttpResponse>(response, httpStatus);
 	}
 	
-	public ResponseEntity<GetPicturesHttpResponse> getPictures(GetPicturesHttpResponse response, String tournamentId) {
+	public ResponseEntity<GetPicturesHttpResponse> getPictures(GetPicturesHttpResponse response, String tournamentId, int pageNumber) {
 		HttpStatus httpStatus;
 		
 		try {
-			List<Picture> pictures = pictureService.getPictures(tournamentId);
+			List<Picture> pictures = pictureService.getPictures(tournamentId, pageNumber);
 			response.setData(pictures);
+			log.trace("[Get pictures] Se listaron {} imágenes con éxito", pictures.size());
+			
 			httpStatus = HttpStatus.OK;
 			response.setOpCode("200");
 		} catch(CannotGetJdbcConnectionException e) {

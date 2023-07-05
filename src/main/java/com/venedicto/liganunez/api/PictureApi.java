@@ -8,6 +8,7 @@ package com.venedicto.liganunez.api;
 import java.util.List;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.venedicto.liganunez.model.http.GetPicturesHttpResponse;
 import com.venedicto.liganunez.model.http.HttpResponse;
@@ -25,13 +27,12 @@ import com.venedicto.liganunez.model.http.UploadPicturesHttpResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
-@javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2023-07-03T17:50:32.647490955Z[GMT]")
+@javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2023-07-05T19:15:05.066485954Z[GMT]")
 @Validated
 public interface PictureApi {
 
@@ -52,7 +53,7 @@ public interface PictureApi {
 
     @Operation(summary = "Obtención de fotos", description = "", tags={ "picture" })
     @ApiResponses(value = { 
-        @ApiResponse(responseCode = "200", description = "Imágenes obtenidas con éxito", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = GetPicturesHttpResponse.class)))),
+        @ApiResponse(responseCode = "200", description = "Imágenes obtenidas con éxito", content = @Content(mediaType = "application/json", schema = @Schema(implementation = GetPicturesHttpResponse.class))),
         
         @ApiResponse(responseCode = "404", description = "No hay imágenes disponibles", content = @Content(mediaType = "application/json", schema = @Schema(implementation = HttpResponse.class))),
         
@@ -62,7 +63,7 @@ public interface PictureApi {
     @RequestMapping(value = "/picture/{tournamentId}",
         produces = { "application/json" }, 
         method = RequestMethod.GET)
-    ResponseEntity<GetPicturesHttpResponse> getPictures(@Parameter(in = ParameterIn.PATH, description = "", required=true, schema=@Schema()) @PathVariable("tournamentId") String tournamentId);
+    ResponseEntity<GetPicturesHttpResponse> getPictures(@Parameter(in = ParameterIn.PATH, description = "", required=true, schema=@Schema()) @PathVariable("tournamentId") String tournamentId, @NotNull @Parameter(in = ParameterIn.QUERY, description = "" ,required=true,schema=@Schema()) @Valid @RequestParam(value = "pageNumber", required = true) Integer pageNumber);
 
 
     @Operation(summary = "Carga de fotos", description = "", tags={ "picture" })
