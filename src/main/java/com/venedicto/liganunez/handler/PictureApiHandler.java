@@ -6,10 +6,14 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.CannotGetJdbcConnectionException;
 import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
 import com.venedicto.liganunez.model.ErrorCodes;
 import com.venedicto.liganunez.model.UserData;
@@ -32,16 +36,19 @@ public class PictureApiHandler {
 	private AuthService authService;
 	@Autowired
 	private PictureService pictureService;
+	@Autowired
+    private CommonsMultipartResolver multipartResolver;
 	
-	public ResponseEntity<UploadPicturesHttpResponse> uploadPicture(UploadPicturesHttpResponse response, String token, List<Picture> pictures) {
+	public ResponseEntity<UploadPicturesHttpResponse> uploadPicture(MultipartHttpServletRequest request, UploadPicturesHttpResponse response, String token, String tournamentId, String place, String date, List<MultipartFile> pictures) {
 		HttpStatus httpStatus;
 		
 		try {
 			UserData user = authService.readSessionToken(token);
 			log.trace("[Upload pictures] El usuario {} recibió acceso para cargar las imágenes", user.getId());
 			
-			List<PictureInfo> picturesInfo = pictureService.uploadPicture(pictures);
+			List<PictureInfo> picturesInfo = pictureService.uploadPicture(tournamentId, place, date, pictures);
 			response.setData(picturesInfo);
+			multipartResolver.cleanupMultipart(request);
 			
 			httpStatus = HttpStatus.OK;
 			response.setOpCode("200");
@@ -60,6 +67,11 @@ public class PictureApiHandler {
 			response.setOpCode("503");
 			response.addErrorsItem(HttpUtils.generateError(ErrorCodes.LN0002));
 			log.error("[Upload pictures] No se pudo establecer conexión con la base de datos", e);
+		} catch(EmptyResultDataAccessException e) {
+			httpStatus = HttpStatus.NOT_FOUND;
+			response.setOpCode("404");
+			response.addErrorsItem(HttpUtils.generateError(ErrorCodes.LN0022));
+			log.error("[Upload pictures] El torneo ingresado no existe", e);
 		} catch(Exception e) {
 			httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
 			response.setOpCode("500");

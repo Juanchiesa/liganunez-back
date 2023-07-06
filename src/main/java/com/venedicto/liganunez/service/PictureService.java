@@ -3,17 +3,19 @@ package com.venedicto.liganunez.service;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.venedicto.liganunez.model.http.Picture;
 import com.venedicto.liganunez.model.http.PictureInfo;
 import com.venedicto.liganunez.repository.PictureRepository;
 import com.venedicto.liganunez.service.external.FirebaseService;
-import com.venedicto.liganunez.validator.PictureValidator;
 
 @Service
 public class PictureService {
@@ -22,35 +24,34 @@ public class PictureService {
 	private FirebaseService filesService;
 	@Autowired
 	private PictureRepository pictureRepository;
-	@Autowired
-	private PictureValidator pictureValidator;
 	
-	public List<PictureInfo> uploadPicture(List<Picture> pictures) {
+	public List<PictureInfo> uploadPicture(String tournamentId, String place, String date, List<MultipartFile> pictures) {
 		List<PictureInfo> picturesInfo = new ArrayList<>();
 		
 		pictures.stream().parallel().forEach(picture -> {
-			if(pictureValidator.isValidFile(picture)) {
-				//Insert into database
-				try {
-					pictureRepository.createPicture(picture.getId(), picture);
-				} catch(Exception e) {
-					picturesInfo.add(setPictureInfo(picture.getId(), "500"));
-					return;
-				}
+			//Generate picture id
+			String pictureId = UUID.randomUUID().toString();
+			
+			//Insert into database
+			try {
+				pictureRepository.createPicture(pictureId, place, date, tournamentId);
+			} catch(EmptyResultDataAccessException e) {
+				throw e;
+			} catch(Exception e) {
+				picturesInfo.add(setPictureInfo(pictureId, "500"));
+				return;
+			}
 				
-				//Upload to the server, if fails rollback in the database
-				try {
-					filesService.uploadImage(picture.getId(), picture.getTournamentId(), picture.getFile());
-					picturesInfo.add(setPictureInfo(picture.getId(), "201"));
-				} catch(IllegalArgumentException e) {
-					pictureRepository.deletePicture(picture.getId());
-					picturesInfo.add(setPictureInfo(picture.getId(), "400"));
-				} catch(Exception e) {
-					pictureRepository.deletePicture(picture.getId());
-					picturesInfo.add(setPictureInfo(picture.getId(), "500"));
-				}
-			} else {
-				picturesInfo.add(setPictureInfo(picture.getId(), "400"));
+			//Upload to the server, if fails rollback in the database
+			try {
+				filesService.uploadImage(pictureId, tournamentId, picture);
+				picturesInfo.add(setPictureInfo(pictureId, "201"));
+			} catch(IllegalArgumentException e) {
+				pictureRepository.deletePicture(pictureId);
+				picturesInfo.add(setPictureInfo(pictureId, "400"));
+			} catch(Exception e) {
+				pictureRepository.deletePicture(pictureId);
+				picturesInfo.add(setPictureInfo(pictureId, "500"));
 			}
 		});
 		
@@ -71,7 +72,7 @@ public class PictureService {
 	
 	public List<Picture> getPictures(String tournamentId, int pageNumber) {
 		List<Picture> pictures = pictureRepository.getPictures(tournamentId, pageNumber);
-		pictures.forEach(picture -> {
+		pictures.stream().parallel().forEach(picture -> {
 			try {
 				picture.setFile(filesService.getImage(tournamentId, picture.getId()));
 			} catch (FileNotFoundException e) {

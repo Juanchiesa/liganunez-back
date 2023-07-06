@@ -25,8 +25,8 @@ public class PictureRepository {
 	private static final String SELECT_PICTURES = "SELECT picture_id, picture_date, picture_place, picture_tournament FROM pictures WHERE picture_tournament = ? LIMIT ? OFFSET ?";
 	
 	@Retryable(retryFor = CannotGetJdbcConnectionException.class, listeners = "dbRetryListeners", maxAttemptsExpression = "${db.retry.attempts}",  backoff = @Backoff(delayExpression = "${db.retry.delay}", maxDelayExpression = "${db.timeout}", multiplier = 1))
-	public void createPicture(String id, Picture picture) {
-		jdbcTemplate.update(CREATE_PICTURE, id, picture.getDate(), picture.getPlace(), picture.getTournamentId());
+	public void createPicture(String id, String place, String date, String tournamentId) {
+		jdbcTemplate.update(CREATE_PICTURE, id, date, place, tournamentId);
 	}
 	
 	@Retryable(retryFor = CannotGetJdbcConnectionException.class, listeners = "dbRetryListeners", maxAttemptsExpression = "${db.retry.attempts}",  backoff = @Backoff(delayExpression = "${db.retry.delay}", maxDelayExpression = "${db.timeout}", multiplier = 1))

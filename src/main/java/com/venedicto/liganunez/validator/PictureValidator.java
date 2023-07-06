@@ -2,37 +2,39 @@ package com.venedicto.liganunez.validator;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.venedicto.liganunez.model.ErrorCodes;
+import com.venedicto.liganunez.model.http.Error;
+import com.venedicto.liganunez.utils.HttpUtils;
 
 import org.springframework.stereotype.Component;
 
-import com.venedicto.liganunez.model.http.Picture;
-
 @Component
 public class PictureValidator extends Validator {
-	public boolean isValidFile(Picture picture) {
-		if(stringNullOrEmpty(picture.getTournamentId())) {
-			return false;
-		}
+	public List<Error> validateFileUpload(String tournamentId, String place, String date) {
+		List<Error> errors = new ArrayList<>();
 		
-		if(stringNullOrEmpty(picture.getDate())) {
-			return false;
+		if(stringNullOrEmpty(date)) {
+			errors.add(HttpUtils.generateError(ErrorCodes.LN0018));
 		} else {
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 			try {
-				LocalDateTime.parse(picture.getDate(), formatter);
+				LocalDateTime.parse(date, formatter);
 			} catch(Exception e) {
-				return false;
+				errors.add(HttpUtils.generateError(ErrorCodes.LN0019));
 			}
 		}
 		
-		if(stringNullOrEmpty(picture.getPlace())) {
-			return false;
+		if(stringNullOrEmpty(place)) {
+			errors.add(HttpUtils.generateError(ErrorCodes.LN0020));
 		}
 		
-		if(stringNullOrEmpty(picture.getFile())) {
-			return false;
+		if(stringNullOrEmpty(tournamentId)) {
+			errors.add(HttpUtils.generateError(ErrorCodes.LN0021));
 		}
 		
-		return true;
+		return errors;
 	}
 }

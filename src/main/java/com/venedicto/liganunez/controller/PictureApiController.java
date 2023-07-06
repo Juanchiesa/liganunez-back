@@ -7,19 +7,25 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.venedicto.liganunez.api.PictureApi;
 import com.venedicto.liganunez.handler.PictureApiHandler;
+import com.venedicto.liganunez.model.http.Error;
 import com.venedicto.liganunez.model.http.GetPicturesHttpResponse;
 import com.venedicto.liganunez.model.http.HttpResponse;
-import com.venedicto.liganunez.model.http.Picture;
 import com.venedicto.liganunez.model.http.UploadPicturesHttpResponse;
+import com.venedicto.liganunez.utils.HttpUtils;
+import com.venedicto.liganunez.validator.PictureValidator;
 
 @RestController
 public class PictureApiController implements PictureApi {
     private static final Logger log = LoggerFactory.getLogger(PictureApiController.class);
     @Autowired
     private PictureApiHandler handler;
+    @Autowired
+    private PictureValidator validator;
     
     public ResponseEntity<HttpResponse> deletePicture(String tournamentId, String id, String token) {
     	HttpResponse response = new HttpResponse();
@@ -35,10 +41,15 @@ public class PictureApiController implements PictureApi {
         return handler.getPictures(response, tournamentId, pageNumber);
     }
 
-    public ResponseEntity<UploadPicturesHttpResponse> uploadPictures(String token, List<Picture> body) {
-    	UploadPicturesHttpResponse response = new UploadPicturesHttpResponse();
-        
-        log.info("[Upload pictures] Se procederá a subir una cantidad de {} fotos", body.size());
-    	return handler.uploadPicture(response, token, body);
-    }
+	public ResponseEntity<UploadPicturesHttpResponse> uploadPictures(MultipartHttpServletRequest request, String token, String place, String date, String tournamentId, List<MultipartFile> files) {
+		UploadPicturesHttpResponse response = new UploadPicturesHttpResponse();
+		
+		List<Error> errors = validator.validateFileUpload(tournamentId, place, date);
+		if(!errors.isEmpty()) {
+			return HttpUtils.badRequestResponse(log, response, errors);
+		}
+		
+		log.info("[Upload pictures] Se procederá a subir una cantidad de {} fotos", files.size());
+		return handler.uploadPicture(request, response, token, tournamentId, place, date, files);
+	}
 }

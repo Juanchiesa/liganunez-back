@@ -1,6 +1,5 @@
 package com.venedicto.liganunez.service.external;
 
-import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -8,14 +7,15 @@ import java.util.Base64;
 
 import javax.annotation.PostConstruct;
 
-import org.apache.commons.imaging.ImageReadException;
-import org.apache.commons.imaging.Imaging;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.Blob.BlobSourceOption;
+import com.google.cloud.storage.BlobId;
+import com.google.cloud.storage.BlobInfo;
 import com.google.cloud.storage.Bucket;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
@@ -51,15 +51,12 @@ public class FirebaseService {
 		return Base64.getEncoder().encodeToString(blob.getContent());
 	}
 	
-	public void uploadImage(String id, String tournamentId, String file) throws IOException, ImageReadException {
-		//Decode the file
-		byte[] decodedFile = Base64.getDecoder().decode(file);
-		
-		//Check if is an image
-		Imaging.getImageInfo(new ByteArrayInputStream(decodedFile), null);
-		
+	public void uploadImage(String id, String tournamentId, MultipartFile file) throws IOException {
 		//Upload on the server
-		bucket.create(tournamentId+"/"+id, new ByteArrayInputStream(decodedFile));
+		BlobInfo blobInfo = BlobInfo.newBuilder(BlobId.of(bucket.getName(), tournamentId+"/"+id))
+	            					.setContentType(file.getContentType())
+	            					.build();
+		bucket.getStorage().create(blobInfo, file.getInputStream().readAllBytes());
 	}
 	
 	public void deleteImage(String tournamentId, String filename) throws FileNotFoundException {
