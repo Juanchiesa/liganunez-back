@@ -70,7 +70,14 @@
             <artifactId>springfox-swagger-ui</artifactId>
             <version>${springfox-version}</version>
         </dependency>
-
+		
+		<!-- Files upload -->
+		<dependency>
+		    <groupId>commons-fileupload</groupId>
+		    <artifactId>commons-fileupload</artifactId>
+		    <version>1.4</version>
+		</dependency>
+		
 		<!-- Jackson -->
         <dependency>
             <groupId>com.github.joschi.jackson</groupId>
@@ -141,13 +148,6 @@
 		 	<groupId>com.google.firebase</groupId>
 			<artifactId>firebase-admin</artifactId>
 			<version>9.2.0</version>
-		</dependency>
-		
-		<!-- Apache -->
-		<dependency>
-		    <groupId>org.apache.commons</groupId>
-		    <artifactId>commons-imaging</artifactId>
-		    <version>1.0-alpha3</version>
 		</dependency>
     </dependencies>
 </project>

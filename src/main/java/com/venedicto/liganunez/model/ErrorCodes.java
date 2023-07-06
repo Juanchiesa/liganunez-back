@@ -21,7 +21,12 @@ public enum ErrorCodes {
 	LN0014("LN", "0014", "El torneo ingresado es inexistente"),
 	LN0015("LN", "0015", "Acceso no autorizado"),
 	LN0016("LN", "0016", "Sesión expirada"),
-	LN0017("LN", "0017", "No se pudo encontrar la imagen");
+	LN0017("LN", "0017", "No se pudo encontrar la imagen"),
+	LN0018("LN", "0018", "El campo 'fecha' no puede estar vacío"),
+	LN0019("LN", "0019", "El formato del campo 'fecha' es incorrecto"),
+	LN0020("LN", "0020", "El campo 'sede' no puede estar vacío"),
+	LN0021("LN", "0021", "El campo 'torneo' no puede estar vacío"),
+	LN0022("LN", "0022", "El torneo ingresado no existe");
 	
 	private String id;
 	private String code;

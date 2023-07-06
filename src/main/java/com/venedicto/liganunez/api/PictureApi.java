@@ -13,15 +13,15 @@ import javax.validation.constraints.NotNull;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.venedicto.liganunez.model.http.GetPicturesHttpResponse;
 import com.venedicto.liganunez.model.http.HttpResponse;
-import com.venedicto.liganunez.model.http.Picture;
 import com.venedicto.liganunez.model.http.UploadPicturesHttpResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -65,7 +65,13 @@ public interface PictureApi {
         method = RequestMethod.GET)
     ResponseEntity<GetPicturesHttpResponse> getPictures(@Parameter(in = ParameterIn.PATH, description = "", required=true, schema=@Schema()) @PathVariable("tournamentId") String tournamentId, @NotNull @Parameter(in = ParameterIn.QUERY, description = "" ,required=true,schema=@Schema()) @Valid @RequestParam(value = "pageNumber", required = true) Integer pageNumber);
 
-
+    /**
+     * 
+     * ATENCIÓN AL REGENERAR
+     * Reemplazar Resource por MultipartFile
+     * Agreegar MultipartHttpServletRequest request como primer parametro
+     * 
+     * **/
     @Operation(summary = "Carga de fotos", description = "", tags={ "picture" })
     @ApiResponses(value = { 
         @ApiResponse(responseCode = "200", description = "Imágenes almacenadas con éxito", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UploadPicturesHttpResponse.class))),
@@ -77,8 +83,7 @@ public interface PictureApi {
         @ApiResponse(responseCode = "503", description = "Base de datos/AWS no disponibles", content = @Content(mediaType = "application/json", schema = @Schema(implementation = HttpResponse.class))) })
     @RequestMapping(value = "/picture/upload",
         produces = { "application/json" }, 
-        consumes = { "application/json" }, 
+        consumes = { "multipart/form-data" }, 
         method = RequestMethod.POST)
-    ResponseEntity<UploadPicturesHttpResponse> uploadPictures(@Parameter(in = ParameterIn.HEADER, description = "Token de autenticación del usuario" ,schema=@Schema()) @RequestHeader(value="token", required=false) String token, @Parameter(in = ParameterIn.DEFAULT, description = "Información de las imágenes", schema=@Schema()) @Valid @RequestBody List<Picture> body);
-
+    ResponseEntity<UploadPicturesHttpResponse> uploadPictures(MultipartHttpServletRequest request, @Parameter(in = ParameterIn.HEADER, description = "Token de autenticación del usuario" ,schema=@Schema()) @RequestHeader(value="token", required=false) String token, @Parameter(in = ParameterIn.DEFAULT, description = "",schema=@Schema()) @RequestParam(value="place", required=false)  String place, @Parameter(in = ParameterIn.DEFAULT, description = "",schema=@Schema()) @RequestParam(value="date", required=false)  String date, @Parameter(in = ParameterIn.DEFAULT, description = "",schema=@Schema()) @RequestParam(value="tournamentId", required=false)  String tournamentId, @Parameter(in = ParameterIn.DEFAULT, description = "",schema=@Schema()) @RequestParam(value="files", required=false)  List<MultipartFile> files);
 }
