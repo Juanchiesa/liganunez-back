@@ -3,7 +3,6 @@ package com.venedicto.liganunez.service.external;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Base64;
 
 import javax.annotation.PostConstruct;
 
@@ -12,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.google.auth.oauth2.GoogleCredentials;
+import com.google.cloud.storage.Acl;
 import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.Blob.BlobSourceOption;
 import com.google.cloud.storage.BlobId;
@@ -47,8 +47,8 @@ public class FirebaseService {
 			throw new FileNotFoundException("La imagen no se subió al servidor");
 		}
 		
-		//blob.createAcl(Acl.of(Acl.User.ofAllUsers(), Acl.Role.READER));
-		return Base64.getEncoder().encodeToString(blob.getContent());
+		blob.createAcl(Acl.of(Acl.User.ofAllUsers(), Acl.Role.READER));
+		return "https://storage.googleapis.com/" + blob.getBucket() + "/" + blob.getName();
 	}
 	
 	public void uploadImage(String id, String tournamentId, MultipartFile file) throws IOException {
