@@ -83,4 +83,11 @@ public class UserApiController implements UserApi {
     	log.info("[Password update] Se recibió una solicitud con el código {}", requestCode);
         return handler.updateUserPassword(response, requestCode);
     }
+
+	public ResponseEntity<HttpResponse> downloadPicture(String pictureId, String token) {
+		HttpResponse response = new HttpResponse();
+		
+		log.info("[Register download] Se recibió una solicitud para descargar la imagen {}", pictureId);
+		return handler.registerDownload(response, token, pictureId);
+	}
 }

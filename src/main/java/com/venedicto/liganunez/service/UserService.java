@@ -99,4 +99,8 @@ public class UserService {
 		
 		userRepository.deletePasswordUpdateRequest(requestCode);
 	}
+	
+	public void registerDownload(String pictureId, String userId) {
+		userRepository.createDownload(pictureId, userId);
+	}
 }

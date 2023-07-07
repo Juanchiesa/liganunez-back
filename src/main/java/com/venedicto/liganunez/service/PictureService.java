@@ -82,4 +82,12 @@ public class PictureService {
 		
 		return pictures;
 	}
+	
+	public int getPicturesStats() {
+		return pictureRepository.getPicturesStats();
+	}
+	
+	public int getPictureStats(String id) {
+		return pictureRepository.getPictureStats(id);
+	}
 }

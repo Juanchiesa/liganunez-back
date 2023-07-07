@@ -26,7 +26,8 @@ public enum ErrorCodes {
 	LN0019("LN", "0019", "El formato del campo 'fecha' es incorrecto"),
 	LN0020("LN", "0020", "El campo 'sede' no puede estar vacío"),
 	LN0021("LN", "0021", "El campo 'torneo' no puede estar vacío"),
-	LN0022("LN", "0022", "El torneo ingresado no existe");
+	LN0022("LN", "0022", "El torneo ingresado no existe"),
+	LN0023("LN", "0023", "La imagen es inexistente");
 	
 	private String id;
 	private String code;

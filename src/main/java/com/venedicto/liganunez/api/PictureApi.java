@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.venedicto.liganunez.model.http.DownloadStatsHttpResponse;
 import com.venedicto.liganunez.model.http.GetPicturesHttpResponse;
 import com.venedicto.liganunez.model.http.HttpResponse;
 import com.venedicto.liganunez.model.http.UploadPicturesHttpResponse;
@@ -32,7 +33,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
-@javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2023-07-05T19:15:05.066485954Z[GMT]")
+@javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2023-07-07T20:57:15.350055179Z[GMT]")
 @Validated
 public interface PictureApi {
 
@@ -65,6 +66,36 @@ public interface PictureApi {
         method = RequestMethod.GET)
     ResponseEntity<GetPicturesHttpResponse> getPictures(@Parameter(in = ParameterIn.PATH, description = "", required=true, schema=@Schema()) @PathVariable("tournamentId") String tournamentId, @NotNull @Parameter(in = ParameterIn.QUERY, description = "" ,required=true,schema=@Schema()) @Valid @RequestParam(value = "pageNumber", required = true) Integer pageNumber, @Parameter(in = ParameterIn.QUERY, description = "" ,schema=@Schema()) @Valid @RequestParam(value = "place", required = false) String place, @Parameter(in = ParameterIn.QUERY, description = "" ,schema=@Schema()) @Valid @RequestParam(value = "date", required = false) String date);
 
+    @Operation(summary = "Obtención de stats de una imagen", description = "", tags={ "picture" })
+    @ApiResponses(value = { 
+        @ApiResponse(responseCode = "200", description = "Estadísticas de las imágenes obtenidas con éxito", content = @Content(mediaType = "application/json", schema = @Schema(implementation = DownloadStatsHttpResponse.class))),
+        
+        @ApiResponse(responseCode = "404", description = "Imagen inexistente", content = @Content(mediaType = "application/json", schema = @Schema(implementation = HttpResponse.class))),
+        
+        @ApiResponse(responseCode = "500", description = "Error del servidor", content = @Content(mediaType = "application/json", schema = @Schema(implementation = HttpResponse.class))),
+        
+        @ApiResponse(responseCode = "503", description = "Base de datos no disponible", content = @Content(mediaType = "application/json", schema = @Schema(implementation = HttpResponse.class))) })
+    @RequestMapping(value = "/picture/stats",
+        produces = { "application/json" }, 
+        method = RequestMethod.GET)
+    ResponseEntity<DownloadStatsHttpResponse> getPictureStats();
+
+
+    @Operation(summary = "Obtención de stats de una imagen", description = "", tags={ "picture" })
+    @ApiResponses(value = { 
+        @ApiResponse(responseCode = "200", description = "Estadísticas de la imagen obtenidas con éxito", content = @Content(mediaType = "application/json", schema = @Schema(implementation = DownloadStatsHttpResponse.class))),
+        
+        @ApiResponse(responseCode = "404", description = "Imagen inexistente", content = @Content(mediaType = "application/json", schema = @Schema(implementation = HttpResponse.class))),
+        
+        @ApiResponse(responseCode = "500", description = "Error del servidor", content = @Content(mediaType = "application/json", schema = @Schema(implementation = HttpResponse.class))),
+        
+        @ApiResponse(responseCode = "503", description = "Base de datos no disponible", content = @Content(mediaType = "application/json", schema = @Schema(implementation = HttpResponse.class))) })
+    @RequestMapping(value = "/picture/{id}/stats",
+        produces = { "application/json" }, 
+        method = RequestMethod.GET)
+    ResponseEntity<DownloadStatsHttpResponse> getPictureStats(@Parameter(in = ParameterIn.PATH, description = "", required=true, schema=@Schema()) @PathVariable("id") String id);
+
+    
     /**
      * 
      * ATENCIÓN AL REGENERAR
