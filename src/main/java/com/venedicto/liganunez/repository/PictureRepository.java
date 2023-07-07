@@ -22,7 +22,12 @@ public class PictureRepository {
 	
 	private static final String CREATE_PICTURE = "INSERT INTO pictures(picture_id, picture_date, picture_place, picture_tournament) VALUES(?, ?, ?, ?)";
 	private static final String DELETE_PICTURE = "DELETE FROM pictures WHERE picture_id = ?";
-	private static final String SELECT_PICTURES = "SELECT picture_id, picture_date, picture_place, picture_tournament FROM pictures WHERE picture_tournament = ? LIMIT ? OFFSET ?";
+	private static final String SELECT_PICTURE_DOWNLOADS = "SELECT COUNT(*) FROM downloads WHERE download_picture_id = ?";
+	private static final String SELECT_PICTURES_DOWNLOADS = "SELECT COUNT(*) FROM downloads";
+	private static final String SELECT_PICTURES_WITHOUT_FILTERS = "SELECT picture_id, picture_date, picture_place, picture_tournament FROM pictures WHERE picture_tournament = ? LIMIT ? OFFSET ?";
+	private static final String SELECT_PICTURES_WITH_DATE_FILTER = "SELECT picture_id, picture_date, picture_place, picture_tournament FROM pictures WHERE picture_tournament = ? AND picture_date = ? LIMIT ? OFFSET ?";
+	private static final String SELECT_PICTURES_WITH_PLACE_FILTER = "SELECT picture_id, picture_date, picture_place, picture_tournament FROM pictures WHERE picture_tournament = ? AND picture_place = ? LIMIT ? OFFSET ?";
+	private static final String SELECT_PICTURES_WITH_DATE_AND_PLACE_FILTER = "SELECT picture_id, picture_date, picture_place, picture_tournament FROM pictures WHERE picture_tournament = ? AND picture_date = ? AND picture_place = ? LIMIT ? OFFSET ?";
 	
 	@Retryable(retryFor = CannotGetJdbcConnectionException.class, listeners = "dbRetryListeners", maxAttemptsExpression = "${db.retry.attempts}",  backoff = @Backoff(delayExpression = "${db.retry.delay}", maxDelayExpression = "${db.timeout}", multiplier = 1))
 	public void createPicture(String id, String place, String date, String tournamentId) {
@@ -30,13 +35,33 @@ public class PictureRepository {
 	}
 	
 	@Retryable(retryFor = CannotGetJdbcConnectionException.class, listeners = "dbRetryListeners", maxAttemptsExpression = "${db.retry.attempts}",  backoff = @Backoff(delayExpression = "${db.retry.delay}", maxDelayExpression = "${db.timeout}", multiplier = 1))
-	public List<Picture> getPictures(String tournamentId, int pageNumber) {
+	public List<Picture> getPictures(String tournamentId, int pageNumber, String place, String date) {
 		int offset = (pageNumber * pageSize) - pageSize;
-		return jdbcTemplate.query(SELECT_PICTURES, new PictureRowMapper(), tournamentId, pageSize, offset);
+		
+		if(place != null && date != null) {
+			return jdbcTemplate.query(SELECT_PICTURES_WITH_DATE_AND_PLACE_FILTER, new PictureRowMapper(), tournamentId, date, place, pageSize, offset);
+		} else if(place != null) {
+			return jdbcTemplate.query(SELECT_PICTURES_WITH_PLACE_FILTER, new PictureRowMapper(), tournamentId, place, pageSize, offset);
+		} else if(date != null) {
+			return jdbcTemplate.query(SELECT_PICTURES_WITH_DATE_FILTER, new PictureRowMapper(), tournamentId, date, pageSize, offset);
+		}
+		
+		return jdbcTemplate.query(SELECT_PICTURES_WITHOUT_FILTERS, new PictureRowMapper(), tournamentId, pageSize, offset);
 	}
 	
 	@Retryable(retryFor = CannotGetJdbcConnectionException.class, listeners = "dbRetryListeners", maxAttemptsExpression = "${db.retry.attempts}",  backoff = @Backoff(delayExpression = "${db.retry.delay}", maxDelayExpression = "${db.timeout}", multiplier = 1))
 	public void deletePicture(String id) {
 		jdbcTemplate.update(DELETE_PICTURE, id);
+	}
+	
+	/** Stats **/
+	@Retryable(retryFor = CannotGetJdbcConnectionException.class, listeners = "dbRetryListeners", maxAttemptsExpression = "${db.retry.attempts}",  backoff = @Backoff(delayExpression = "${db.retry.delay}", maxDelayExpression = "${db.timeout}", multiplier = 1))
+	public int getPicturesStats() {
+		return jdbcTemplate.queryForObject(SELECT_PICTURES_DOWNLOADS, Integer.class);
+	}
+	
+	@Retryable(retryFor = CannotGetJdbcConnectionException.class, listeners = "dbRetryListeners", maxAttemptsExpression = "${db.retry.attempts}",  backoff = @Backoff(delayExpression = "${db.retry.delay}", maxDelayExpression = "${db.timeout}", multiplier = 1))
+	public int getPictureStats(String id) {
+		return jdbcTemplate.queryForObject(SELECT_PICTURE_DOWNLOADS, Integer.class, id);
 	}
 }

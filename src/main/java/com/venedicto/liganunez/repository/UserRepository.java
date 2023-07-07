@@ -19,6 +19,7 @@ public class UserRepository {
     private JdbcTemplate jdbcTemplate;
 	
 	private static final String CHECK_USER_QUERY = "SELECT COUNT(*) AS user_exists FROM users WHERE user_email = ?";
+	private static final String CREATE_DOWNLOAD = "INSERT INTO downloads(download_picture_id, download_user_id) VALUES(?, ?)";
 	private static final String CREATE_PASSWORD_UPDATE_REQUEST = "INSERT INTO password_update_requests(request_code, request_user) VALUES(?, ?)";
 	private static final String CREATE_USER = "INSERT INTO users(user_id, user_email, user_password, user_name, user_age, user_address) VALUES(?, ?, ?, ?, ?, ?)";
 	private static final String DELETE_PASSWORD_UPDATE_REQUEST = "DELETE FROM password_update_requests WHERE request_code = ?";
@@ -65,5 +66,11 @@ public class UserRepository {
 	@Retryable(retryFor = CannotGetJdbcConnectionException.class, listeners = "dbRetryListeners", maxAttemptsExpression = "${db.retry.attempts}",  backoff = @Backoff(delayExpression = "${db.retry.delay}", maxDelayExpression = "${db.timeout}", multiplier = 1))
 	public void deletePasswordUpdateRequest(String code) {
 		jdbcTemplate.update(DELETE_PASSWORD_UPDATE_REQUEST, code);
+	}
+	
+	/** Stats **/
+	@Retryable(retryFor = CannotGetJdbcConnectionException.class, listeners = "dbRetryListeners", maxAttemptsExpression = "${db.retry.attempts}",  backoff = @Backoff(delayExpression = "${db.retry.delay}", maxDelayExpression = "${db.timeout}", multiplier = 1))
+	public void createDownload(String pictureId, String userId) {
+		jdbcTemplate.update(CREATE_DOWNLOAD, pictureId, userId);
 	}
 }

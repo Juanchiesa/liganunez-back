@@ -12,6 +12,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.venedicto.liganunez.api.PictureApi;
 import com.venedicto.liganunez.handler.PictureApiHandler;
+import com.venedicto.liganunez.model.http.DownloadStatsHttpResponse;
 import com.venedicto.liganunez.model.http.Error;
 import com.venedicto.liganunez.model.http.GetPicturesHttpResponse;
 import com.venedicto.liganunez.model.http.HttpResponse;
@@ -34,11 +35,18 @@ public class PictureApiController implements PictureApi {
         return handler.deletePicture(response, token, tournamentId, id);
     }
 
-	public ResponseEntity<GetPicturesHttpResponse> getPictures(String tournamentId, Integer pageNumber) {
+	public ResponseEntity<GetPicturesHttpResponse> getPictures(String tournamentId, Integer pageNumber, String place, String date) {
 		GetPicturesHttpResponse response = new GetPicturesHttpResponse();
 		
+		if(date != null) {
+			List<Error> errors = validator.validateDateFormat(date);
+			if(!errors.isEmpty()) {
+				return HttpUtils.badRequestResponse(log, response, errors);
+			}
+		}
+		
 		log.info("[Get pictures] Se solicitaron las imagenes del torneo {}", tournamentId);
-        return handler.getPictures(response, tournamentId, pageNumber);
+        return handler.getPictures(response, tournamentId, pageNumber, place, date);
     }
 
 	public ResponseEntity<UploadPicturesHttpResponse> uploadPictures(MultipartHttpServletRequest request, String token, String place, String date, String tournamentId, List<MultipartFile> files) {
@@ -51,5 +59,19 @@ public class PictureApiController implements PictureApi {
 		
 		log.info("[Upload pictures] Se procederá a subir una cantidad de {} fotos", files.size());
 		return handler.uploadPicture(request, response, token, tournamentId, place, date, files);
+	}
+
+	public ResponseEntity<DownloadStatsHttpResponse> getPictureStats() {
+		DownloadStatsHttpResponse response = new DownloadStatsHttpResponse();
+		
+		log.info("[Pictures stats] Se consultaron las estadísticas de las imágenes");
+		return handler.getPicturesStats(response);
+	}
+
+	public ResponseEntity<DownloadStatsHttpResponse> getPictureStats(String id) {
+		DownloadStatsHttpResponse response = new DownloadStatsHttpResponse();
+		
+		log.info("[Picture stats] Se consultaron las estadísticas de la imagen {}", id);
+		return handler.getPictureStats(response, id);
 	}
 }

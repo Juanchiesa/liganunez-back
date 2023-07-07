@@ -5,6 +5,7 @@ import javax.security.auth.login.LoginException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
@@ -22,6 +23,9 @@ import com.venedicto.liganunez.model.http.UserLoginHttpResponse;
 import com.venedicto.liganunez.service.AuthService;
 import com.venedicto.liganunez.service.UserService;
 import com.venedicto.liganunez.utils.HttpUtils;
+
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
 
 @Component
 public class UserApiHandler {
@@ -194,6 +198,47 @@ public class UserApiHandler {
 			response.setOpCode("500");
 			response.addErrorsItem(HttpUtils.generateError(ErrorCodes.LN0000));
 			log.error("[Password update] Ocurrió un error inesperado", e);
+		}
+		
+		return new ResponseEntity<HttpResponse>(response, httpStatus);
+	}
+	
+	public ResponseEntity<HttpResponse> registerDownload(HttpResponse response, String token, String pictureId) {
+		HttpStatus httpStatus;
+		
+		try {
+			UserData user = authService.readSessionToken(token);
+			log.trace("[Register download] El usuario {} recibió acceso para descargar las imagen", user.getId());
+			
+			userService.registerDownload(pictureId, user.getId());
+			
+			httpStatus = HttpStatus.OK;
+			response.setOpCode("200");
+		} catch(MalformedJwtException | IllegalArgumentException e) {
+			httpStatus = HttpStatus.FORBIDDEN;
+			response.setOpCode("403");
+			response.addErrorsItem(HttpUtils.generateError(ErrorCodes.LN0015));
+			log.error("[Register download] Token inválido", e);
+		} catch(ExpiredJwtException e) {
+			httpStatus = HttpStatus.UNAUTHORIZED;
+			response.setOpCode("401");
+			response.addErrorsItem(HttpUtils.generateError(ErrorCodes.LN0016));
+			log.error("[Register download] Token expirado", e);
+		} catch(CannotGetJdbcConnectionException e) {
+			httpStatus = HttpStatus.SERVICE_UNAVAILABLE;
+			response.setOpCode("503");
+			response.addErrorsItem(HttpUtils.generateError(ErrorCodes.LN0002));
+			log.error("[Register download] No se pudo establecer conexión con la base de datos", e);
+		} catch(DataIntegrityViolationException e) {
+			httpStatus = HttpStatus.NOT_FOUND;
+			response.setOpCode("404");
+			response.addErrorsItem(HttpUtils.generateError(ErrorCodes.LN0023));
+			log.error("[Register download] La imagen es inexistente", e);
+		} catch(Exception e) {
+			httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+			response.setOpCode("500");
+			response.addErrorsItem(HttpUtils.generateError(ErrorCodes.LN0000));
+			log.error("[Register download] Ocurrió un error inesperado", e);
 		}
 		
 		return new ResponseEntity<HttpResponse>(response, httpStatus);
