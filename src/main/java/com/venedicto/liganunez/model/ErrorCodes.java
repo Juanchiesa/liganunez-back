@@ -4,7 +4,7 @@ import lombok.Getter;
 
 @Getter
 public enum ErrorCodes {
-	LN0000("LN", "0000", "Ocurrió un error insesperado"),
+	LN0000("LN", "0000", "Ocurrió un error inesperado"),
 	LN0001("LN", "0001", "Formato de correo electrónico incorrecto"),
 	LN0002("LN", "0002", "No se pudieron cargar los datos"),
 	LN0003("LN", "0003", "El campo 'barrio' no puede estar vacío"),
