@@ -123,11 +123,11 @@ public class PictureApiHandler {
 		return new ResponseEntity<HttpResponse>(response, httpStatus);
 	}
 	
-	public ResponseEntity<GetPicturesHttpResponse> getPictures(GetPicturesHttpResponse response, String tournamentId, int pageNumber) {
+	public ResponseEntity<GetPicturesHttpResponse> getPictures(GetPicturesHttpResponse response, String tournamentId, int pageNumber, String place, String date) {
 		HttpStatus httpStatus;
 		
 		try {
-			List<Picture> pictures = pictureService.getPictures(tournamentId, pageNumber);
+			List<Picture> pictures = pictureService.getPictures(tournamentId, pageNumber, place, date);
 			response.setData(pictures);
 			log.trace("[Get pictures] Se listaron {} imágenes con éxito", pictures.size());
 			

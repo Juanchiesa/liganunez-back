@@ -1,15 +1,14 @@
 package com.venedicto.liganunez.validator;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.springframework.stereotype.Component;
 
 import com.venedicto.liganunez.model.ErrorCodes;
 import com.venedicto.liganunez.model.http.Error;
 import com.venedicto.liganunez.utils.HttpUtils;
-
-import org.springframework.stereotype.Component;
 
 @Component
 public class PictureValidator extends Validator {
@@ -19,12 +18,7 @@ public class PictureValidator extends Validator {
 		if(stringNullOrEmpty(date)) {
 			errors.add(HttpUtils.generateError(ErrorCodes.LN0018));
 		} else {
-			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-			try {
-				LocalDateTime.parse(date, formatter);
-			} catch(Exception e) {
-				errors.add(HttpUtils.generateError(ErrorCodes.LN0019));
-			}
+			errors.addAll(validateDateFormat(date));
 		}
 		
 		if(stringNullOrEmpty(place)) {
@@ -33,6 +27,21 @@ public class PictureValidator extends Validator {
 		
 		if(stringNullOrEmpty(tournamentId)) {
 			errors.add(HttpUtils.generateError(ErrorCodes.LN0021));
+		}
+		
+		return errors;
+	}
+	
+	public List<Error> validateDateFormat(String date) {
+		List<Error> errors = new ArrayList<>();
+		
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		dateFormat.setLenient(false);
+		
+		try {
+			dateFormat.parse(date);
+		} catch(Exception e) {
+			errors.add(HttpUtils.generateError(ErrorCodes.LN0019));
 		}
 		
 		return errors;

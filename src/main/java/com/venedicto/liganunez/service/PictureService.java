@@ -70,8 +70,8 @@ public class PictureService {
 		pictureRepository.deletePicture(id);
 	}
 	
-	public List<Picture> getPictures(String tournamentId, int pageNumber) {
-		List<Picture> pictures = pictureRepository.getPictures(tournamentId, pageNumber);
+	public List<Picture> getPictures(String tournamentId, int pageNumber, String place, String date) {
+		List<Picture> pictures = pictureRepository.getPictures(tournamentId, pageNumber, place, date);
 		pictures.stream().parallel().forEach(picture -> {
 			try {
 				picture.setFile(filesService.getImage(tournamentId, picture.getId()));

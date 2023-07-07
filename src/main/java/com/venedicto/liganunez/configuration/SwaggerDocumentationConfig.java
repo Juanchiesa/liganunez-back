@@ -35,7 +35,7 @@ public class SwaggerDocumentationConfig {
             .license("")
             .licenseUrl("http://unlicense.org")
             .termsOfServiceUrl("")
-            .version("1.3.0")
+            .version("1.3.7")
             .contact(new Contact("","", ""))
             .build();
     }
