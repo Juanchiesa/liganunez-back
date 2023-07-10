@@ -85,18 +85,13 @@ public class AuthService {
 		String base64EncodedToken = Base64.getEncoder().encodeToString(token.getBytes());
 		encodedTokenBuilder.append(base64EncodedToken);
 		encodedTokenBuilder.reverse();
-		encodedTokenBuilder.replace(0, 2, "Ln");
+		encodedTokenBuilder.append("Ln");
 		
 		return encodedTokenBuilder.toString();
 	}
 	
 	private String decodeSessionToken(String encodedToken) {
-		StringBuilder decodedTokenBuilder = new StringBuilder();
-		decodedTokenBuilder.append(encodedToken);
-		decodedTokenBuilder.replace(encodedToken.length()-2, encodedToken.length(), "==");
-		
-		byte[] decodedToken = decodedTokenBuilder.toString().getBytes();
-		
+		byte[] decodedToken = encodedToken.substring(2).getBytes();
 		return new String(Base64.getDecoder().decode(decodedToken));
 	}
 }
