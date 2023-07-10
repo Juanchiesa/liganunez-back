@@ -6,7 +6,7 @@ import org.threeten.bp.format.DateTimeFormatter;
 
 public class LocalDateConverter implements Converter<String, LocalDate> {
     private final DateTimeFormatter formatter;
-
+    
     public LocalDateConverter(String dateFormat) {
         this.formatter = DateTimeFormatter.ofPattern(dateFormat);
     }

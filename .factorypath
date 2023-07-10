@@ -146,5 +146,4 @@
     <factorypathentry kind="VARJAR" id="M2_REPO/io/netty/netty-resolver/4.1.92.Final/netty-resolver-4.1.92.Final.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/io/netty/netty-transport-native-unix-common/4.1.92.Final/netty-transport-native-unix-common-4.1.92.Final.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/io/netty/netty-transport/4.1.92.Final/netty-transport-4.1.92.Final.jar" enabled="true" runInBatchMode="false"/>
-    <factorypathentry kind="VARJAR" id="M2_REPO/org/apache/commons/commons-imaging/1.0-alpha3/commons-imaging-1.0-alpha3.jar" enabled="true" runInBatchMode="false"/>
 </factorypath>
