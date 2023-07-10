@@ -16,13 +16,12 @@ public class UserValidator extends Validator {
 	public List<Error> validateEmail(String email) {
 		List<Error> errors = new ArrayList<>();
 		
-		if(!RegExpUtils.isValidEmail(email)) {
+		if(stringNullOrEmpty(email) || !RegExpUtils.isValidEmail(email)) {
 			errors.add(HttpUtils.generateError(ErrorCodes.LN0001));
 		}
 		
 		return errors;
 	}
-	
 	
 	public List<Error> validateUser(User user) {
 		List<Error> errors = new ArrayList<>();
