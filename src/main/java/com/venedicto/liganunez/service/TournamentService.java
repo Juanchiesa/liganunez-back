@@ -23,7 +23,7 @@ public class TournamentService {
 	public List<Tournament> getTournaments() {
 		List<Tournament> tournaments = tournamentRepository.getTournaments();
 		
-		tournaments.forEach(tournament -> {
+		tournaments.stream().parallel().forEach(tournament -> {
 			try {
 				tournament.setLogo(firebaseService.getImage(tournament.getId(), "logo.png"));
 			} catch (FileNotFoundException e) {
