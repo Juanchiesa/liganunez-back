@@ -26,6 +26,7 @@ public class UserRepository {
 	private static final String DELETE_USER = "DELETE FROM users WHERE user_email = ?";
 	private static final String SELECT_PASSWORD_UPDATE_REQUEST = "SELECT request_code, request_user, request_creation_date FROM password_update_requests WHERE request_code = ?";
 	private static final String SELECT_USER = "SELECT user_id, user_email, user_password, user_name, user_age, user_address, user_permissions, user_creation_date, user_last_update FROM users WHERE user_email = ?";
+	private static final String SELECT_USERS_COUNT = "SELECT COUNT(*) FROM users;";
 	private static final String UPDATE_USER_PASSWORD = "UPDATE users SET user_password = ? WHERE user_email = ?";
 	
 	@Retryable(retryFor = CannotGetJdbcConnectionException.class, listeners = "dbRetryListeners", maxAttemptsExpression = "${db.retry.attempts}",  backoff = @Backoff(delayExpression = "${db.retry.delay}", maxDelayExpression = "${db.timeout}", multiplier = 1))
@@ -72,5 +73,10 @@ public class UserRepository {
 	@Retryable(retryFor = CannotGetJdbcConnectionException.class, listeners = "dbRetryListeners", maxAttemptsExpression = "${db.retry.attempts}",  backoff = @Backoff(delayExpression = "${db.retry.delay}", maxDelayExpression = "${db.timeout}", multiplier = 1))
 	public void createDownload(String pictureId, String userId) {
 		jdbcTemplate.update(CREATE_DOWNLOAD, pictureId, userId);
+	}
+	
+	@Retryable(retryFor = CannotGetJdbcConnectionException.class, listeners = "dbRetryListeners", maxAttemptsExpression = "${db.retry.attempts}",  backoff = @Backoff(delayExpression = "${db.retry.delay}", maxDelayExpression = "${db.timeout}", multiplier = 1))
+	public int getUsersStats() {
+		return jdbcTemplate.queryForObject(SELECT_USERS_COUNT, Integer.class);
 	}
 }

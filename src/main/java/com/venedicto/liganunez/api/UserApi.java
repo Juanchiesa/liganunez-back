@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import com.venedicto.liganunez.model.http.HttpResponse;
 import com.venedicto.liganunez.model.http.User;
 import com.venedicto.liganunez.model.http.UserLoginHttpResponse;
+import com.venedicto.liganunez.model.http.UserStatsResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -63,7 +64,20 @@ public interface UserApi {
         method = RequestMethod.POST)
     ResponseEntity<HttpResponse> createUser(@Parameter(in = ParameterIn.DEFAULT, description = "Información del usuario (debe enviarse sin accessKey)", required=true, schema=@Schema()) @Valid @RequestBody User body);
 
-
+    
+    @Operation(summary = "Obtención de stats de usuarios", description = "", tags={ "user" })
+    @ApiResponses(value = { 
+        @ApiResponse(responseCode = "200", description = "Stats obtenidas", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserStatsResponse.class))),
+        
+        @ApiResponse(responseCode = "500", description = "Error del servidor", content = @Content(mediaType = "application/json", schema = @Schema(implementation = HttpResponse.class))),
+        
+        @ApiResponse(responseCode = "503", description = "Base de datos no disponible", content = @Content(mediaType = "application/json", schema = @Schema(implementation = HttpResponse.class))) })
+    @RequestMapping(value = "/user/stats",
+        produces = { "application/json" }, 
+        method = RequestMethod.GET)
+    ResponseEntity<UserStatsResponse> getUserStats();
+    
+    
     @Operation(summary = "Ingreso de un usuario al sistema", description = "", tags={ "user" })
     @ApiResponses(value = { 
         @ApiResponse(responseCode = "200", description = "Login exitoso (sin email ni accessKey)", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserLoginHttpResponse.class))),
