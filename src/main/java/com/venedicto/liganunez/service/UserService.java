@@ -103,4 +103,8 @@ public class UserService {
 	public void registerDownload(String pictureId, String userId) {
 		userRepository.createDownload(pictureId, userId);
 	}
+	
+	public int getUsersStats() {
+		return userRepository.getUsersStats();
+	}
 }

@@ -96,4 +96,11 @@ public class UserRepositoryTest {
 		repository.createDownload("xxxx-xxx-xx-x", "aaa-aa-a");
 		Mockito.verify(jdbcTemplate, Mockito.times(1)).update(Mockito.anyString(), Mockito.eq("xxxx-xxx-xx-x"), Mockito.eq("aaa-aa-a"));
 	}
+	
+	@Test
+	public void getUsersStats_ok() {
+		Mockito.when(jdbcTemplate.queryForObject(Mockito.anyString(), Mockito.eq(Integer.class))).thenReturn(1);
+		repository.getUsersStats();
+		Mockito.verify(jdbcTemplate, Mockito.times(1)).queryForObject(Mockito.anyString(), Mockito.eq(Integer.class));
+	}
 }

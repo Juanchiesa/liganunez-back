@@ -14,6 +14,7 @@ import com.venedicto.liganunez.model.http.Error;
 import com.venedicto.liganunez.model.http.HttpResponse;
 import com.venedicto.liganunez.model.http.User;
 import com.venedicto.liganunez.model.http.UserLoginHttpResponse;
+import com.venedicto.liganunez.model.http.UserStatsResponse;
 import com.venedicto.liganunez.utils.HttpUtils;
 import com.venedicto.liganunez.validator.UserValidator;
 
@@ -89,5 +90,12 @@ public class UserApiController implements UserApi {
 		
 		log.info("[Register download] Se recibió una solicitud para descargar la imagen {}", pictureId);
 		return handler.registerDownload(response, token, pictureId);
+	}
+
+	public ResponseEntity<UserStatsResponse> getUserStats() {
+		UserStatsResponse response = new UserStatsResponse();
+		
+		log.info("[Users stats] Se solicitaron las estadísticas generales de usuarios");
+		return handler.getUsersStats(response);
 	}
 }

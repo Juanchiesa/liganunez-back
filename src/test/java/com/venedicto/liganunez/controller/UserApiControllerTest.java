@@ -16,6 +16,7 @@ import com.venedicto.liganunez.model.http.Error;
 import com.venedicto.liganunez.model.http.HttpResponse;
 import com.venedicto.liganunez.model.http.User;
 import com.venedicto.liganunez.model.http.UserLoginHttpResponse;
+import com.venedicto.liganunez.model.http.UserStatsResponse;
 import com.venedicto.liganunez.utils.HttpUtils;
 import com.venedicto.liganunez.validator.UserValidator;
 
@@ -111,5 +112,11 @@ public class UserApiControllerTest {
 	public void downloadPicture_ok() {
 		controller.downloadPicture("aaaa", "12345");
 		Mockito.verify(handler, Mockito.times(1)).registerDownload(Mockito.any(HttpResponse.class), Mockito.eq("12345"), Mockito.eq("aaaa"));
+	}
+	
+	@Test
+	public void getUsersStats_ok() {
+		controller.getUserStats();
+		Mockito.verify(handler, Mockito.times(1)).getUsersStats(Mockito.any(UserStatsResponse.class));
 	}
 }

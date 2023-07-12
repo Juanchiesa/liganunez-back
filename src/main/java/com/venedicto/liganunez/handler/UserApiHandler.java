@@ -20,6 +20,7 @@ import com.venedicto.liganunez.model.UserData;
 import com.venedicto.liganunez.model.http.HttpResponse;
 import com.venedicto.liganunez.model.http.User;
 import com.venedicto.liganunez.model.http.UserLoginHttpResponse;
+import com.venedicto.liganunez.model.http.UserStatsResponse;
 import com.venedicto.liganunez.service.AuthService;
 import com.venedicto.liganunez.service.UserService;
 import com.venedicto.liganunez.utils.HttpUtils;
@@ -242,5 +243,28 @@ public class UserApiHandler {
 		}
 		
 		return new ResponseEntity<HttpResponse>(response, httpStatus);
+	}
+	
+	public ResponseEntity<UserStatsResponse> getUsersStats(UserStatsResponse response) {
+		HttpStatus httpStatus;
+		
+		try {
+			int totalUsers = userService.getUsersStats();
+			response.setData(totalUsers);
+			httpStatus = HttpStatus.OK;
+			response.setOpCode("200");
+		} catch(CannotGetJdbcConnectionException e) {
+			httpStatus = HttpStatus.SERVICE_UNAVAILABLE;
+			response.setOpCode("503");
+			response.addErrorsItem(HttpUtils.generateError(ErrorCodes.LN0002));
+			log.error("[Users stats] No se pudo establecer conexión con la base de datos", e);
+		} catch(Exception e) {
+			httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+			response.setOpCode("500");
+			response.addErrorsItem(HttpUtils.generateError(ErrorCodes.LN0000));
+			log.error("[Users stats] Ocurrió un error inesperado", e);
+		}
+		
+		return new ResponseEntity<UserStatsResponse>(response, httpStatus);
 	}
 }
