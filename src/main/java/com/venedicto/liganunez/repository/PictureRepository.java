@@ -23,6 +23,7 @@ public class PictureRepository {
 	private static final String CREATE_PICTURE = "INSERT INTO pictures(picture_id, picture_date, picture_place, picture_tournament) VALUES(?, ?, ?, ?)";
 	private static final String DELETE_PICTURE = "DELETE FROM pictures WHERE picture_id = ?";
 	private static final String SELECT_PICTURE_DOWNLOADS = "SELECT COUNT(*) FROM downloads WHERE download_picture_id = ?";
+	private static final String SELECT_PICTURES = "SELECT picture_id, picture_date, picture_place, picture_tournament FROM pictures";
 	private static final String SELECT_PICTURES_DOWNLOADS = "SELECT COUNT(*) FROM downloads";
 	private static final String SELECT_PICTURES_WITHOUT_FILTERS = "SELECT picture_id, picture_date, picture_place, picture_tournament FROM pictures WHERE picture_tournament = ? LIMIT ? OFFSET ?";
 	private static final String SELECT_PICTURES_WITH_DATE_FILTER = "SELECT picture_id, picture_date, picture_place, picture_tournament FROM pictures WHERE picture_tournament = ? AND picture_date = ? LIMIT ? OFFSET ?";
@@ -32,6 +33,11 @@ public class PictureRepository {
 	@Retryable(retryFor = CannotGetJdbcConnectionException.class, listeners = "dbRetryListeners", maxAttemptsExpression = "${db.retry.attempts}",  backoff = @Backoff(delayExpression = "${db.retry.delay}", maxDelayExpression = "${db.timeout}", multiplier = 1))
 	public void createPicture(String id, String place, String date, String tournamentId) {
 		jdbcTemplate.update(CREATE_PICTURE, id, date, place, tournamentId);
+	}
+	
+	@Retryable(retryFor = CannotGetJdbcConnectionException.class, listeners = "dbRetryListeners", maxAttemptsExpression = "${db.retry.attempts}",  backoff = @Backoff(delayExpression = "${db.retry.delay}", maxDelayExpression = "${db.timeout}", multiplier = 1))
+	public List<Picture> getPictures() {
+		return jdbcTemplate.query(SELECT_PICTURES, new PictureRowMapper());
 	}
 	
 	@Retryable(retryFor = CannotGetJdbcConnectionException.class, listeners = "dbRetryListeners", maxAttemptsExpression = "${db.retry.attempts}",  backoff = @Backoff(delayExpression = "${db.retry.delay}", maxDelayExpression = "${db.timeout}", multiplier = 1))
