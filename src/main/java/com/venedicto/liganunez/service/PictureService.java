@@ -90,4 +90,15 @@ public class PictureService {
 	public int getPictureStats(String id) {
 		return pictureRepository.getPictureStats(id);
 	}
+	
+	public void deleteAllPictures() {
+		List<Picture> pictures = pictureRepository.getPictures();
+		pictures.forEach(picture -> {
+			try {
+				filesService.deleteImage(picture.getTournamentId(), picture.getId());
+			} catch (FileNotFoundException e) {
+				log.error("No pudo eliminarse la imagen {}", picture.getId(), e);
+			}
+		});
+	}
 }

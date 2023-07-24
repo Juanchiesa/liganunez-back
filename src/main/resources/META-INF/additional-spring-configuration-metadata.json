@@ -93,5 +93,10 @@
     "name": "tmp.files.max.size",
     "type": "java.lang.String",
     "description": "A description for 'tmp.files.max.size'"
+  },
+  {
+    "name": "cron.tarea.trimestral",
+    "type": "java.lang.String",
+    "description": "A description for 'cron.tarea.trimestral'"
   }
 ]}

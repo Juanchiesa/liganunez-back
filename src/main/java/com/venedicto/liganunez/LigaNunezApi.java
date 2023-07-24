@@ -10,6 +10,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.retry.annotation.EnableRetry;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import com.venedicto.liganunez.utils.converter.LocalDateConverter;
@@ -21,6 +22,7 @@ import springfox.documentation.oas.annotations.EnableOpenApi;
 @SpringBootApplication
 @EnableOpenApi
 @EnableRetry
+@EnableScheduling
 @ComponentScan(basePackages = { "com.venedicto.liganunez", "com.venedicto.liganunez.api" , "com.venedicto.liganunez.configuration"})
 public class LigaNunezApi implements CommandLineRunner {
 
