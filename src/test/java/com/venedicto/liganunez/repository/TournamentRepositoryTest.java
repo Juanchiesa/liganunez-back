@@ -14,6 +14,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import com.venedicto.liganunez.model.http.Tournament;
+import com.venedicto.liganunez.model.http.Tournament.TypeEnum;
 import com.venedicto.liganunez.repository.mappers.TournamentRowMapper;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -51,6 +52,7 @@ public class TournamentRepositoryTest {
 		for(int i=0; i<nTournaments; i++) {
 			Tournament tournament = new Tournament();
 			tournament.setId(String.valueOf(i));
+			tournament.setType(TypeEnum.M);
 			tournaments.add(tournament);
 		}
 		
