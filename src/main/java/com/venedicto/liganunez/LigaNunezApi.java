@@ -25,7 +25,6 @@ import springfox.documentation.oas.annotations.EnableOpenApi;
 @EnableScheduling
 @ComponentScan(basePackages = { "com.venedicto.liganunez", "com.venedicto.liganunez.api" , "com.venedicto.liganunez.configuration"})
 public class LigaNunezApi implements CommandLineRunner {
-
     @Override
     public void run(String... arg0) throws Exception {
         if (arg0.length > 0 && arg0[0].equals("exitcode")) {
@@ -54,6 +53,5 @@ public class LigaNunezApi implements CommandLineRunner {
         public int getExitCode() {
             return 10;
         }
-
     }
 }
