@@ -86,6 +86,15 @@ public class PictureRepositoryTest {
 		assertEquals(2, response);
 	}
 	
+	@Test
+	public void getPictures_ok() {
+		Mockito.when(jdbcTemplate.query(Mockito.anyString(), Mockito.any(PictureRowMapper.class))).thenReturn(generatePicturesList(50));
+		
+		List<Picture> response = repository.getPictures();
+		
+		assertEquals(50, response.size());
+	}
+	
 	/** Adicional **/
 	private List<Picture> generatePicturesList(int nPictures) {
 		List<Picture> pictures = new ArrayList<>();
