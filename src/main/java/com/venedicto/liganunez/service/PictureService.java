@@ -96,6 +96,7 @@ public class PictureService {
 		pictures.forEach(picture -> {
 			try {
 				filesService.deleteImage(picture.getTournamentId(), picture.getId());
+				pictureRepository.deletePicture(picture.getId());
 			} catch (FileNotFoundException e) {
 				log.error("No pudo eliminarse la imagen {}", picture.getId(), e);
 			}

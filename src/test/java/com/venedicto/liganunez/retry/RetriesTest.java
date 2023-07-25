@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.jdbc.CannotGetJdbcConnectionException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -31,6 +32,7 @@ import com.venedicto.liganunez.service.external.MailSenderService;
 @ContextConfiguration
 @PropertySource("classpath:application.properties")
 @ComponentScan("com.venedicto.liganunez")
+@ActiveProfiles("test")
 @Import(UserRepository.class)
 public class RetriesTest {
 	@Autowired
