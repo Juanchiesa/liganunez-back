@@ -9,15 +9,16 @@ import javax.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.venedicto.liganunez.model.HttpResponse;
-import com.venedicto.liganunez.model.User;
-import com.venedicto.liganunez.model.UserLoginHttpResponse;
+import com.venedicto.liganunez.model.http.HttpResponse;
+import com.venedicto.liganunez.model.http.User;
+import com.venedicto.liganunez.model.http.UserLoginHttpResponse;
+import com.venedicto.liganunez.model.http.UserStatsResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -27,7 +28,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
-@javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2023-06-18T18:56:59.203396144Z[GMT]")
+@javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2023-07-07T20:57:15.350055179Z[GMT]")
 @Validated
 public interface UserApi {
 
@@ -42,9 +43,10 @@ public interface UserApi {
         @ApiResponse(responseCode = "500", description = "Error del servidor", content = @Content(mediaType = "application/json", schema = @Schema(implementation = HttpResponse.class))),
         
         @ApiResponse(responseCode = "503", description = "Base de datos/Servicio email no disponibles", content = @Content(mediaType = "application/json", schema = @Schema(implementation = HttpResponse.class))) })
-            @GetMapping(value = "/user",
-                    produces = {"application/json"})
-    ResponseEntity<HttpResponse> checkUserExistence(@Parameter(in = ParameterIn.HEADER, description = "Email ingresado" ,required=true,schema=@Schema()) @RequestHeader(required = true) String email);
+    @RequestMapping(value = "/user",
+        produces = { "application/json" }, 
+        method = RequestMethod.GET)
+    ResponseEntity<HttpResponse> checkUserExistence(@Parameter(in = ParameterIn.HEADER, description = "Email ingresado" ,required=true,schema=@Schema()) @RequestHeader(value="email", required=true) String email);
 
 
     @Operation(summary = "Registro de un nuevo usuario", description = "", tags={ "user" })
@@ -56,12 +58,26 @@ public interface UserApi {
         @ApiResponse(responseCode = "500", description = "Error del servidor", content = @Content(mediaType = "application/json", schema = @Schema(implementation = HttpResponse.class))),
         
         @ApiResponse(responseCode = "503", description = "Base de datos/Servicio email no disponibles", content = @Content(mediaType = "application/json", schema = @Schema(implementation = HttpResponse.class))) })
-            @PostMapping(value = "/user",
-                    produces = {"application/json"},
-                    consumes = {"application/json"})
+    @RequestMapping(value = "/user",
+        produces = { "application/json" }, 
+        consumes = { "application/json" }, 
+        method = RequestMethod.POST)
     ResponseEntity<HttpResponse> createUser(@Parameter(in = ParameterIn.DEFAULT, description = "Información del usuario (debe enviarse sin accessKey)", required=true, schema=@Schema()) @Valid @RequestBody User body);
 
-
+    
+    @Operation(summary = "Obtención de stats de usuarios", description = "", tags={ "user" })
+    @ApiResponses(value = { 
+        @ApiResponse(responseCode = "200", description = "Stats obtenidas", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserStatsResponse.class))),
+        
+        @ApiResponse(responseCode = "500", description = "Error del servidor", content = @Content(mediaType = "application/json", schema = @Schema(implementation = HttpResponse.class))),
+        
+        @ApiResponse(responseCode = "503", description = "Base de datos no disponible", content = @Content(mediaType = "application/json", schema = @Schema(implementation = HttpResponse.class))) })
+    @RequestMapping(value = "/user/stats",
+        produces = { "application/json" }, 
+        method = RequestMethod.GET)
+    ResponseEntity<UserStatsResponse> getUserStats();
+    
+    
     @Operation(summary = "Ingreso de un usuario al sistema", description = "", tags={ "user" })
     @ApiResponses(value = { 
         @ApiResponse(responseCode = "200", description = "Login exitoso (sin email ni accessKey)", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserLoginHttpResponse.class))),
@@ -71,69 +87,54 @@ public interface UserApi {
         @ApiResponse(responseCode = "500", description = "Error del servidor", content = @Content(mediaType = "application/json", schema = @Schema(implementation = HttpResponse.class))),
         
         @ApiResponse(responseCode = "503", description = "Base de datos no disponible", content = @Content(mediaType = "application/json", schema = @Schema(implementation = HttpResponse.class))) })
-            @GetMapping(value = "/user/login",
-                    produces = {"application/json"})
-    ResponseEntity<UserLoginHttpResponse> loginUser(@Parameter(in = ParameterIn.HEADER, description = "Correo electrónico ingresado" ,required=true,schema=@Schema()) @RequestHeader(required = true) String email, @Parameter(in = ParameterIn.HEADER, description = "Contraseña ingresada" ,required=true,schema=@Schema()) @RequestHeader(required = true) String password);
-
-
-    @Operation(summary = "Cierre de sesión de un usuario", description = "", tags={ "user" })
-    @ApiResponses(value = { 
-        @ApiResponse(responseCode = "200", description = "Sesión cerrada", content = @Content(mediaType = "application/json", schema = @Schema(implementation = HttpResponse.class))),
-        
-        @ApiResponse(responseCode = "400", description = "Error en la request", content = @Content(mediaType = "application/json", schema = @Schema(implementation = HttpResponse.class))),
-        
-        @ApiResponse(responseCode = "404", description = "Usuario inexistente", content = @Content(mediaType = "application/json", schema = @Schema(implementation = HttpResponse.class))),
-        
-        @ApiResponse(responseCode = "500", description = "Error del servidor", content = @Content(mediaType = "application/json", schema = @Schema(implementation = HttpResponse.class))) })
-            @GetMapping(value = "/user/logout",
-                    produces = {"application/json"})
-    ResponseEntity<HttpResponse> logoutUser(@Parameter(in = ParameterIn.HEADER, description = "Email del usuario" ,required=true,schema=@Schema()) @RequestHeader(required = true) String email);
+    @RequestMapping(value = "/user/login",
+        produces = { "application/json" }, 
+        method = RequestMethod.GET)
+    ResponseEntity<UserLoginHttpResponse> loginUser(@Parameter(in = ParameterIn.HEADER, description = "Correo electrónico ingresado" ,required=true,schema=@Schema()) @RequestHeader(value="email", required=true) String email, @Parameter(in = ParameterIn.HEADER, description = "Contraseña ingresada" ,required=true,schema=@Schema()) @RequestHeader(value="password", required=true) String password);
 
 
     @Operation(summary = "Solicitud de actualización de password", description = "", tags={ "user" })
     @ApiResponses(value = { 
-        @ApiResponse(responseCode = "201", description = "Solicitud de actualización de password realizada", content = @Content(mediaType = "application/json", schema = @Schema(implementation = HttpResponse.class))),
+        @ApiResponse(responseCode = "201", description = "Solicitud de actualización de password generada", content = @Content(mediaType = "application/json", schema = @Schema(implementation = HttpResponse.class))),
         
         @ApiResponse(responseCode = "404", description = "Usuario inexistente", content = @Content(mediaType = "application/json", schema = @Schema(implementation = HttpResponse.class))),
         
         @ApiResponse(responseCode = "500", description = "Error del servidor", content = @Content(mediaType = "application/json", schema = @Schema(implementation = HttpResponse.class))),
         
         @ApiResponse(responseCode = "503", description = "Base de datos/Servicio email no disponibles", content = @Content(mediaType = "application/json", schema = @Schema(implementation = HttpResponse.class))) })
-            @PostMapping(value = "/user/update/password",
-                    produces = {"application/json"})
-    ResponseEntity<HttpResponse> requestUserPasswordUpdate();
+    @RequestMapping(value = "/user/update/password",
+        produces = { "application/json" }, 
+        method = RequestMethod.POST)
+    ResponseEntity<HttpResponse> requestUserPasswordUpdate(@Parameter(in = ParameterIn.HEADER, description = "" ,required=true,schema=@Schema()) @RequestHeader(value="userEmail", required=true) String userEmail);
 
 
     @Operation(summary = "Actualización de password", description = "", tags={ "user" })
     @ApiResponses(value = { 
         @ApiResponse(responseCode = "200", description = "Contraseña actualizada", content = @Content(mediaType = "application/json", schema = @Schema(implementation = HttpResponse.class))),
         
-        @ApiResponse(responseCode = "403", description = "No autorizado", content = @Content(mediaType = "application/json", schema = @Schema(implementation = HttpResponse.class))),
-        
-        @ApiResponse(responseCode = "404", description = "Usuario inexistente", content = @Content(mediaType = "application/json", schema = @Schema(implementation = HttpResponse.class))),
+        @ApiResponse(responseCode = "404", description = "Código inexistente", content = @Content(mediaType = "application/json", schema = @Schema(implementation = HttpResponse.class))),
         
         @ApiResponse(responseCode = "500", description = "Error del servidor", content = @Content(mediaType = "application/json", schema = @Schema(implementation = HttpResponse.class))),
         
         @ApiResponse(responseCode = "503", description = "Base de datos no disponible", content = @Content(mediaType = "application/json", schema = @Schema(implementation = HttpResponse.class))) })
-            @PatchMapping(value = "/user/update/password",
-                    produces = {"application/json"})
-    ResponseEntity<HttpResponse> updateUserPassword(@Parameter(in = ParameterIn.HEADER, description = "Nueva contraseña ingresada" ,required=true,schema=@Schema()) @RequestHeader(required = true) String newPassword, @Parameter(in = ParameterIn.HEADER, description = "Código recibido por correo" ,schema=@Schema()) @RequestHeader(required = false) String authCode);
+    @RequestMapping(value = "/user/update/password",
+        produces = { "application/json" }, 
+        method = RequestMethod.PATCH)
+    ResponseEntity<HttpResponse> updateUserPassword(@Parameter(in = ParameterIn.HEADER, description = "Código generado previamente" ,required=true,schema=@Schema()) @RequestHeader(value="requestCode", required=true) String requestCode);
 
-
-    @Operation(summary = "Actualización del nivel de permisos", description = "", tags={ "user" })
+    @Operation(summary = "Descarga de imagen", description = "", tags={ "user" })
     @ApiResponses(value = { 
-        @ApiResponse(responseCode = "200", description = "Permisos actualizados con éxito", content = @Content(mediaType = "application/json", schema = @Schema(implementation = HttpResponse.class))),
+        @ApiResponse(responseCode = "200", description = "Descarga registrada", content = @Content(mediaType = "application/json", schema = @Schema(implementation = HttpResponse.class))),
         
-        @ApiResponse(responseCode = "403", description = "No autorizado", content = @Content(mediaType = "application/json", schema = @Schema(implementation = HttpResponse.class))),
+        @ApiResponse(responseCode = "400", description = "Error en la request", content = @Content(mediaType = "application/json", schema = @Schema(implementation = HttpResponse.class))),
         
-        @ApiResponse(responseCode = "404", description = "Usuario inexistente", content = @Content(mediaType = "application/json", schema = @Schema(implementation = HttpResponse.class))),
+        @ApiResponse(responseCode = "404", description = "Imagen inexistente", content = @Content(mediaType = "application/json", schema = @Schema(implementation = HttpResponse.class))),
         
         @ApiResponse(responseCode = "500", description = "Error del servidor", content = @Content(mediaType = "application/json", schema = @Schema(implementation = HttpResponse.class))),
         
         @ApiResponse(responseCode = "503", description = "Base de datos no disponible", content = @Content(mediaType = "application/json", schema = @Schema(implementation = HttpResponse.class))) })
-            @PatchMapping(value = "/user/update/permissions",
-                    produces = {"application/json"})
-    ResponseEntity<HttpResponse> updateUserPermissionLevel(@Parameter(in = ParameterIn.HEADER, description = "Nivel de permisos" ,required=true,schema=@Schema()) @RequestHeader(required = true) Integer permissionLevel, @Parameter(in = ParameterIn.HEADER, description = "Token de autenticación del usuario" ,schema=@Schema()) @RequestHeader(required = false) String token);
-
+    @RequestMapping(value = "/user/download/picture/{pictureId}",
+        produces = { "application/json" }, 
+        method = RequestMethod.POST)
+    ResponseEntity<HttpResponse> downloadPicture(@Parameter(in = ParameterIn.PATH, description = "ID de la imagen", required=true, schema=@Schema()) @PathVariable("pictureId") String pictureId, @Parameter(in = ParameterIn.HEADER, description = "Token de autenticación del usuario" ,schema=@Schema()) @RequestHeader(value="token", required=false) String token);
 }
-

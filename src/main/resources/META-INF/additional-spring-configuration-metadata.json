@@ -1,5 +1,102 @@
-{"properties": [{
-  "name": "springfox.documentation.open-api.v3.path",
-  "type": "java.lang.String",
-  "description": "A description for 'springfox.documentation.open-api.v3.path'"
-}]}
+{"properties": [
+  {
+    "name": "springfox.documentation.open-api.v3.path",
+    "type": "java.lang.String",
+    "description": "A description for 'springfox.documentation.open-api.v3.path'"
+  },
+  {
+    "name": "develop",
+    "type": "java.lang.String",
+    "description": "A description for 'develop'"
+  },
+  {
+    "name": "db.timeout",
+    "type": "java.lang.String",
+    "description": "A description for 'db.timeout'"
+  },
+  {
+    "name": "db.retry.attempts",
+    "type": "java.lang.String",
+    "description": "A description for 'db.retry.attempts'"
+  },
+  {
+    "name": "db.retry.delay",
+    "type": "java.lang.String",
+    "description": "A description for 'db.retry.delay'"
+  },
+  {
+    "name": "mail.sender.api.key",
+    "type": "java.lang.String",
+    "description": "A description for 'mail.sender.api.key'"
+  },
+  {
+    "name": "mail.sender.url",
+    "type": "java.lang.String",
+    "description": "A description for 'mail.sender.url'"
+  },
+  {
+    "name": "mail.sender.timeout",
+    "type": "java.lang.String",
+    "description": "A description for 'mail.sender.timeout'"
+  },
+  {
+    "name": "mail.sender.retry.attempts",
+    "type": "java.lang.String",
+    "description": "A description for 'mail.sender.retry.attempts'"
+  },
+  {
+    "name": "mail.sender.retry.delay",
+    "type": "java.lang.String",
+    "description": "A description for 'mail.sender.retry.delay'"
+  },
+  {
+    "name": "mail.sender.api.user",
+    "type": "java.lang.String",
+    "description": "A description for 'mail.sender.api.user'"
+  },
+  {
+    "name": "mail.sender.host",
+    "type": "java.lang.String",
+    "description": "A description for 'mail.sender.host'"
+  },
+  {
+    "name": "session.duration",
+    "type": "java.lang.String",
+    "description": "A description for 'session.duration'"
+  },
+  {
+    "name": "session.secret.key",
+    "type": "java.lang.String",
+    "description": "A description for 'session.secret.key'"
+  },
+  {
+    "name": "firebase.api.url",
+    "type": "java.lang.String",
+    "description": "A description for 'firebase.api.url'"
+  },
+  {
+    "name": "db.get.limit",
+    "type": "java.lang.String",
+    "description": "A description for 'db.get.limit'"
+  },
+  {
+    "name": "springfox.documentation.open-api.v3.path",
+    "type": "java.lang.String",
+    "description": "A description for 'springfox.documentation.open-api.v3.path'"
+  },
+  {
+    "name": "tmp.files.dir",
+    "type": "java.lang.String",
+    "description": "A description for 'tmp.files.dir'"
+  },
+  {
+    "name": "tmp.files.max.size",
+    "type": "java.lang.String",
+    "description": "A description for 'tmp.files.max.size'"
+  },
+  {
+    "name": "cron.tarea.trimestral",
+    "type": "java.lang.String",
+    "description": "A description for 'cron.tarea.trimestral'"
+  }
+]}

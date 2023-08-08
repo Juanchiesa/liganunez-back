@@ -1,5 +1,7 @@
 package com.venedicto.liganunez;
 
+import java.util.Date;
+
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.ExitCodeGenerator;
 import org.springframework.boot.SpringApplication;
@@ -7,19 +9,22 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.format.FormatterRegistry;
+import org.springframework.retry.annotation.EnableRetry;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
-import com.venedicto.liganunez.configuration.LocalDateConverter;
-import com.venedicto.liganunez.configuration.LocalDateTimeConverter;
+import com.venedicto.liganunez.utils.converter.LocalDateConverter;
+import com.venedicto.liganunez.utils.converter.LocalDateTimeConverter;
 
 import springfox.documentation.oas.annotations.EnableOpenApi;
 
 @SuppressWarnings("deprecation")
 @SpringBootApplication
 @EnableOpenApi
+@EnableRetry
+@EnableScheduling
 @ComponentScan(basePackages = { "com.venedicto.liganunez", "com.venedicto.liganunez.api" , "com.venedicto.liganunez.configuration"})
 public class LigaNunezApi implements CommandLineRunner {
-
     @Override
     public void run(String... arg0) throws Exception {
         if (arg0.length > 0 && arg0[0].equals("exitcode")) {
@@ -28,6 +33,7 @@ public class LigaNunezApi implements CommandLineRunner {
     }
 
     public static void main(String[] args) throws Exception {
+    	System.setProperty("current.date", new Date().toString());
         new SpringApplication(LigaNunezApi.class).run(args);
     }
 
@@ -47,6 +53,5 @@ public class LigaNunezApi implements CommandLineRunner {
         public int getExitCode() {
             return 10;
         }
-
     }
 }
