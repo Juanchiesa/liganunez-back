@@ -1,6 +1,7 @@
 package com.venedicto.liganunez.service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 import javax.security.auth.login.LoginException;
@@ -98,6 +99,10 @@ public class UserService {
 		mailService.sendMail(userEmail, MailTypes.SEND_NEW_PASSWORD, mailData);
 		
 		userRepository.deletePasswordUpdateRequest(requestCode);
+	}
+	
+	public List<com.venedicto.liganunez.model.http.UserData> getUsers() {
+		return userRepository.getUsers();
 	}
 	
 	public void registerDownload(String pictureId, String userId) {

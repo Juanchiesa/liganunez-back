@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
+import com.venedicto.liganunez.exception.NotAuthorizedException;
 import com.venedicto.liganunez.model.ErrorCodes;
 import com.venedicto.liganunez.model.UserData;
 import com.venedicto.liganunez.model.http.DownloadStatsHttpResponse;
@@ -45,6 +46,7 @@ public class PictureApiHandler {
 		
 		try {
 			UserData user = authService.readSessionToken(token);
+			authService.validateAdminUser(user);
 			log.trace("[Upload pictures] El usuario {} recibió acceso para cargar las imágenes", user.getId());
 			
 			List<PictureInfo> picturesInfo = pictureService.uploadPicture(tournamentId, place, date, pictures);
@@ -53,7 +55,7 @@ public class PictureApiHandler {
 			
 			httpStatus = HttpStatus.OK;
 			response.setOpCode("200");
-		} catch(MalformedJwtException | IllegalArgumentException e) {
+		} catch(MalformedJwtException | IllegalArgumentException | NotAuthorizedException e) {
 			httpStatus = HttpStatus.FORBIDDEN;
 			response.setOpCode("403");
 			response.addErrorsItem(HttpUtils.generateError(ErrorCodes.LN0015));
@@ -88,13 +90,14 @@ public class PictureApiHandler {
 		
 		try {
 			UserData user = authService.readSessionToken(token);
+			authService.validateAdminUser(user);
 			log.trace("[Delete picture] El usuario {} recibió acceso para eliminar las imágenes", user.getId());
 			
 			pictureService.deletePicture(id, tournamentId);
 			
 			httpStatus = HttpStatus.OK;
 			response.setOpCode("200");
-		} catch(MalformedJwtException | IllegalArgumentException e) {
+		} catch(MalformedJwtException | IllegalArgumentException | NotAuthorizedException e) {
 			httpStatus = HttpStatus.FORBIDDEN;
 			response.setOpCode("403");
 			response.addErrorsItem(HttpUtils.generateError(ErrorCodes.LN0015));
@@ -149,16 +152,30 @@ public class PictureApiHandler {
 		return new ResponseEntity<GetPicturesHttpResponse>(response, httpStatus);
 	}
 	
-	public ResponseEntity<DownloadStatsHttpResponse> getPicturesStats(DownloadStatsHttpResponse response) {
+	public ResponseEntity<DownloadStatsHttpResponse> getPicturesStats(DownloadStatsHttpResponse response, String token) {
 		HttpStatus httpStatus;
 		
 		try {
+			UserData user = authService.readSessionToken(token);
+			authService.validateAdminUser(user);
+			log.trace("[Pictures stats] El usuario {} recibió acceso para consultar las estadísticas de las fotos", user.getId());
+			
 			int downloads = pictureService.getPicturesStats();
 			response.setData(downloads);
 			log.trace("[Pictures stats] Se registraron {} descargas totales", downloads);
 			
 			httpStatus = HttpStatus.OK;
 			response.setOpCode("200");
+		} catch(MalformedJwtException | IllegalArgumentException | NotAuthorizedException e) {
+			httpStatus = HttpStatus.FORBIDDEN;
+			response.setOpCode("403");
+			response.addErrorsItem(HttpUtils.generateError(ErrorCodes.LN0015));
+			log.error("[Pictures stats] Token inválido", e);
+		} catch(ExpiredJwtException e) {
+			httpStatus = HttpStatus.UNAUTHORIZED;
+			response.setOpCode("401");
+			response.addErrorsItem(HttpUtils.generateError(ErrorCodes.LN0016));
+			log.error("[Pictures stats] Token expirado", e);
 		} catch(CannotGetJdbcConnectionException e) {
 			httpStatus = HttpStatus.SERVICE_UNAVAILABLE;
 			response.setOpCode("503");
@@ -174,16 +191,30 @@ public class PictureApiHandler {
 		return new ResponseEntity<DownloadStatsHttpResponse>(response, httpStatus);
 	}
 	
-	public ResponseEntity<DownloadStatsHttpResponse> getPictureStats(DownloadStatsHttpResponse response, String id) {
+	public ResponseEntity<DownloadStatsHttpResponse> getPictureStats(DownloadStatsHttpResponse response, String id, String token) {
 		HttpStatus httpStatus;
 		
 		try {
+			UserData user = authService.readSessionToken(token);
+			authService.validateAdminUser(user);
+			log.trace("[Picture stats] El usuario {} recibió acceso para consultar las estadísticas de la foto {}", user.getId(), id);
+			
 			int downloads = pictureService.getPictureStats(id);
 			response.setData(downloads);
 			log.trace("[Picture stats] Se registraron {} descargas para esta imagen", downloads);
 			
 			httpStatus = HttpStatus.OK;
 			response.setOpCode("200");
+		} catch(MalformedJwtException | IllegalArgumentException | NotAuthorizedException e) {
+			httpStatus = HttpStatus.FORBIDDEN;
+			response.setOpCode("403");
+			response.addErrorsItem(HttpUtils.generateError(ErrorCodes.LN0015));
+			log.error("[Picture stats] Token inválido", e);
+		} catch(ExpiredJwtException e) {
+			httpStatus = HttpStatus.UNAUTHORIZED;
+			response.setOpCode("401");
+			response.addErrorsItem(HttpUtils.generateError(ErrorCodes.LN0016));
+			log.error("[Picture stats] Token expirado", e);
 		} catch(CannotGetJdbcConnectionException e) {
 			httpStatus = HttpStatus.SERVICE_UNAVAILABLE;
 			response.setOpCode("503");

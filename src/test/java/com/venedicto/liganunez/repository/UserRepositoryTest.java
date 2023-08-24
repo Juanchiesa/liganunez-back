@@ -14,6 +14,7 @@ import com.venedicto.liganunez.model.PasswordUpdateRequest;
 import com.venedicto.liganunez.model.UserData;
 import com.venedicto.liganunez.model.http.User;
 import com.venedicto.liganunez.repository.mappers.PasswordUpdateRequestRowMapper;
+import com.venedicto.liganunez.repository.mappers.UserDataRowMapper;
 import com.venedicto.liganunez.repository.mappers.UserRowMapper;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -102,5 +103,11 @@ public class UserRepositoryTest {
 		Mockito.when(jdbcTemplate.queryForObject(Mockito.anyString(), Mockito.eq(Integer.class))).thenReturn(1);
 		repository.getUsersStats();
 		Mockito.verify(jdbcTemplate, Mockito.times(1)).queryForObject(Mockito.anyString(), Mockito.eq(Integer.class));
+	}
+	
+	@Test
+	public void getUsers_ok() {
+		repository.getUsers();
+		Mockito.verify(jdbcTemplate, Mockito.times(1)).query(Mockito.anyString(), Mockito.any(UserDataRowMapper.class));
 	}
 }
