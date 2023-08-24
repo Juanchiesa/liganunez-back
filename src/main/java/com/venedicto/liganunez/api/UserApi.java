@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.venedicto.liganunez.model.http.GetUsersHttpResponse;
 import com.venedicto.liganunez.model.http.HttpResponse;
 import com.venedicto.liganunez.model.http.User;
 import com.venedicto.liganunez.model.http.UserLoginHttpResponse;
@@ -63,7 +64,20 @@ public interface UserApi {
         consumes = { "application/json" }, 
         method = RequestMethod.POST)
     ResponseEntity<HttpResponse> createUser(@Parameter(in = ParameterIn.DEFAULT, description = "Información del usuario (debe enviarse sin accessKey)", required=true, schema=@Schema()) @Valid @RequestBody User body);
-
+    
+    
+    @Operation(summary = "Información del usuario", description = "", tags={ "user" })
+    @ApiResponses(value = { 
+        @ApiResponse(responseCode = "200", description = "Usuarios listados correctamente", content = @Content(mediaType = "application/json", schema = @Schema(implementation = GetUsersHttpResponse.class))),
+        
+        @ApiResponse(responseCode = "500", description = "Error del servidor", content = @Content(mediaType = "application/json", schema = @Schema(implementation = HttpResponse.class))),
+        
+        @ApiResponse(responseCode = "503", description = "Base de datos no disponible", content = @Content(mediaType = "application/json", schema = @Schema(implementation = HttpResponse.class))) })
+    @RequestMapping(value = "/users",
+        produces = { "application/json" }, 
+        method = RequestMethod.GET)
+    ResponseEntity<GetUsersHttpResponse> getUsers();
+    
     
     @Operation(summary = "Obtención de stats de usuarios", description = "", tags={ "user" })
     @ApiResponses(value = { 

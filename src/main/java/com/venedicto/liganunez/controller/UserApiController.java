@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.venedicto.liganunez.api.UserApi;
 import com.venedicto.liganunez.handler.UserApiHandler;
 import com.venedicto.liganunez.model.http.Error;
+import com.venedicto.liganunez.model.http.GetUsersHttpResponse;
 import com.venedicto.liganunez.model.http.HttpResponse;
 import com.venedicto.liganunez.model.http.User;
 import com.venedicto.liganunez.model.http.UserLoginHttpResponse;
@@ -84,6 +85,13 @@ public class UserApiController implements UserApi {
     	log.info("[Password update] Se recibió una solicitud con el código {}", requestCode);
         return handler.updateUserPassword(response, requestCode);
     }
+    
+    public ResponseEntity<GetUsersHttpResponse> getUsers() {
+    	GetUsersHttpResponse response = new GetUsersHttpResponse();
+		
+		log.info("[Get user] Se recibió una solicitud para obtener la información de todos los usuarios");
+		return handler.getUsers(response);
+	}
 
 	public ResponseEntity<HttpResponse> downloadPicture(String pictureId, String token) {
 		HttpResponse response = new HttpResponse();
