@@ -76,7 +76,7 @@ public interface UserApi {
     @RequestMapping(value = "/users",
         produces = { "application/json" }, 
         method = RequestMethod.GET)
-    ResponseEntity<GetUsersHttpResponse> getUsers();
+    ResponseEntity<GetUsersHttpResponse> getUsers(@Parameter(in = ParameterIn.HEADER, description = "Token de autenticación del usuario" ,schema=@Schema()) @RequestHeader(value="token", required=false) String token);
     
     
     @Operation(summary = "Obtención de stats de usuarios", description = "", tags={ "user" })
@@ -89,7 +89,7 @@ public interface UserApi {
     @RequestMapping(value = "/user/stats",
         produces = { "application/json" }, 
         method = RequestMethod.GET)
-    ResponseEntity<UserStatsResponse> getUserStats();
+    ResponseEntity<UserStatsResponse> getUserStats(@Parameter(in = ParameterIn.HEADER, description = "Token de autenticación del usuario" ,schema=@Schema()) @RequestHeader(value="token", required=false) String token);
     
     
     @Operation(summary = "Ingreso de un usuario al sistema", description = "", tags={ "user" })

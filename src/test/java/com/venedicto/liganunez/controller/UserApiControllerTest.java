@@ -117,13 +117,13 @@ public class UserApiControllerTest {
 	
 	@Test
 	public void getUsersStats_ok() {
-		controller.getUserStats();
-		Mockito.verify(handler, Mockito.times(1)).getUsersStats(Mockito.any(UserStatsResponse.class));
+		controller.getUserStats("12345");
+		Mockito.verify(handler, Mockito.times(1)).getUsersStats(Mockito.any(UserStatsResponse.class), Mockito.eq("12345"));
 	}
 	
 	@Test
 	public void getUsers_ok() {
-		controller.getUsers();
-		Mockito.verify(handler, Mockito.times(1)).getUsers(Mockito.any(GetUsersHttpResponse.class));
+		controller.getUsers("12345");
+		Mockito.verify(handler, Mockito.times(1)).getUsers(Mockito.any(GetUsersHttpResponse.class), Mockito.eq("12345"));
 	}
 }

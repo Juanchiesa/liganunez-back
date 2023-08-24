@@ -237,39 +237,69 @@ public class UserApiHandlerTest {
 	
 	@Test
 	public void getUsersStats_ok() {
-		ResponseEntity<UserStatsResponse> response = handler.getUsersStats(new UserStatsResponse());
+		Mockito.when(authService.readSessionToken("12345")).thenReturn(new UserData());
+		ResponseEntity<UserStatsResponse> response = handler.getUsersStats(new UserStatsResponse(), "12345");
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 	}
 	@Test
 	public void getUsersStats_dbTimeout() {
+		Mockito.when(authService.readSessionToken("12345")).thenReturn(new UserData());
 		Mockito.when(userService.getUsersStats()).thenThrow(CannotGetJdbcConnectionException.class);
-		ResponseEntity<UserStatsResponse> response = handler.getUsersStats(new UserStatsResponse());
+		ResponseEntity<UserStatsResponse> response = handler.getUsersStats(new UserStatsResponse(), "12345");
 		assertEquals(HttpStatus.SERVICE_UNAVAILABLE, response.getStatusCode());
 	}
 	@Test
+	public void getUsersStats_wrongAuthCode() {
+		Mockito.when(authService.readSessionToken("12345")).thenThrow(MalformedJwtException.class);
+		ResponseEntity<UserStatsResponse> response = handler.getUsersStats(new UserStatsResponse(), "12345");
+		assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+	}
+	@Test
+	public void getUsersStats_expiredSession() {
+		Mockito.when(authService.readSessionToken("12345")).thenThrow(ExpiredJwtException.class);
+		ResponseEntity<UserStatsResponse> response = handler.getUsersStats(new UserStatsResponse(), "12345");
+		assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
+	}
+	@Test
 	public void getUsersStats_internalError() {
+		Mockito.when(authService.readSessionToken("12345")).thenReturn(new UserData());
 		Mockito.when(userService.getUsersStats()).thenThrow(RuntimeException.class);
-		ResponseEntity<UserStatsResponse> response = handler.getUsersStats(new UserStatsResponse());
+		ResponseEntity<UserStatsResponse> response = handler.getUsersStats(new UserStatsResponse(), "12345");
 		assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
 	}
 	
 	@Test
 	public void getUsers_ok() {
 		List<com.venedicto.liganunez.model.http.UserData> usersData = new ArrayList<>();
+		Mockito.when(authService.readSessionToken("12345")).thenReturn(new UserData());
 		Mockito.when(userService.getUsers()).thenReturn(usersData);
-		ResponseEntity<GetUsersHttpResponse> response = handler.getUsers(new GetUsersHttpResponse());
+		ResponseEntity<GetUsersHttpResponse> response = handler.getUsers(new GetUsersHttpResponse(), "12345");
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 	}
 	@Test
 	public void getUsers_dbTimeout() {
+		Mockito.when(authService.readSessionToken("12345")).thenReturn(new UserData());
 		Mockito.when(userService.getUsers()).thenThrow(CannotGetJdbcConnectionException.class);
-		ResponseEntity<GetUsersHttpResponse> response = handler.getUsers(new GetUsersHttpResponse());
+		ResponseEntity<GetUsersHttpResponse> response = handler.getUsers(new GetUsersHttpResponse(), "12345");
 		assertEquals(HttpStatus.SERVICE_UNAVAILABLE, response.getStatusCode());
 	}
 	@Test
+	public void getUsers_wrongAuthCode() {
+		Mockito.when(authService.readSessionToken("12345")).thenThrow(MalformedJwtException.class);
+		ResponseEntity<GetUsersHttpResponse> response = handler.getUsers(new GetUsersHttpResponse(), "12345");
+		assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+	}
+	@Test
+	public void getUsers_expiredSession() {
+		Mockito.when(authService.readSessionToken("12345")).thenThrow(ExpiredJwtException.class);
+		ResponseEntity<GetUsersHttpResponse> response = handler.getUsers(new GetUsersHttpResponse(), "12345");
+		assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
+	}
+	@Test
 	public void getUsers_internalError() {
+		Mockito.when(authService.readSessionToken("12345")).thenReturn(new UserData());
 		Mockito.when(userService.getUsers()).thenThrow(RuntimeException.class);
-		ResponseEntity<GetUsersHttpResponse> response = handler.getUsers(new GetUsersHttpResponse());
+		ResponseEntity<GetUsersHttpResponse> response = handler.getUsers(new GetUsersHttpResponse(), "12345");
 		assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
 	}
 }

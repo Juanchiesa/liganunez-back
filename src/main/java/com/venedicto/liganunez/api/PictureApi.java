@@ -78,7 +78,7 @@ public interface PictureApi {
     @RequestMapping(value = "/picture/stats",
         produces = { "application/json" }, 
         method = RequestMethod.GET)
-    ResponseEntity<DownloadStatsHttpResponse> getPictureStats();
+    ResponseEntity<DownloadStatsHttpResponse> getPictureStats(@Parameter(in = ParameterIn.HEADER, description = "Token de autenticación del usuario" ,schema=@Schema()) @RequestHeader(value="token", required=false) String token);
 
 
     @Operation(summary = "Obtención de stats de una imagen", description = "", tags={ "picture" })
@@ -93,7 +93,7 @@ public interface PictureApi {
     @RequestMapping(value = "/picture/{id}/stats",
         produces = { "application/json" }, 
         method = RequestMethod.GET)
-    ResponseEntity<DownloadStatsHttpResponse> getPictureStats(@Parameter(in = ParameterIn.PATH, description = "", required=true, schema=@Schema()) @PathVariable("id") String id);
+    ResponseEntity<DownloadStatsHttpResponse> getPictureStats(@Parameter(in = ParameterIn.PATH, description = "", required=true, schema=@Schema()) @PathVariable("id") String id, @Parameter(in = ParameterIn.HEADER, description = "Token de autenticación del usuario" ,schema=@Schema()) @RequestHeader(value="token", required=false) String token);
 
     
     /**

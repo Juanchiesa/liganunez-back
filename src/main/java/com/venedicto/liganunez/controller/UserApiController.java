@@ -86,11 +86,11 @@ public class UserApiController implements UserApi {
         return handler.updateUserPassword(response, requestCode);
     }
     
-    public ResponseEntity<GetUsersHttpResponse> getUsers() {
+    public ResponseEntity<GetUsersHttpResponse> getUsers(String token) {
     	GetUsersHttpResponse response = new GetUsersHttpResponse();
 		
 		log.info("[Get user] Se recibió una solicitud para obtener la información de todos los usuarios");
-		return handler.getUsers(response);
+		return handler.getUsers(response, token);
 	}
 
 	public ResponseEntity<HttpResponse> downloadPicture(String pictureId, String token) {
@@ -100,10 +100,10 @@ public class UserApiController implements UserApi {
 		return handler.registerDownload(response, token, pictureId);
 	}
 
-	public ResponseEntity<UserStatsResponse> getUserStats() {
+	public ResponseEntity<UserStatsResponse> getUserStats(String token) {
 		UserStatsResponse response = new UserStatsResponse();
 		
 		log.info("[Users stats] Se solicitaron las estadísticas generales de usuarios");
-		return handler.getUsersStats(response);
+		return handler.getUsersStats(response, token);
 	}
 }
