@@ -16,6 +16,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import com.venedicto.liganunez.exception.NotAuthorizedException;
 import com.venedicto.liganunez.model.UserData;
 import com.venedicto.liganunez.utils.converter.ClaimsConverter;
 
@@ -93,5 +94,11 @@ public class AuthService {
 	private String decodeSessionToken(String encodedToken) {
 		byte[] decodedToken = encodedToken.substring(2).getBytes();
 		return new String(Base64.getDecoder().decode(decodedToken));
+	}
+	
+	public void validateAdminUser(UserData user) {
+		if(user.getData().getPermissionLevel() != 2) {
+			throw new NotAuthorizedException("Permisos insuficientes");
+		}
 	}
 }

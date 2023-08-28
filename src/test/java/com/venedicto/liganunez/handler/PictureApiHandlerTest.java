@@ -154,40 +154,70 @@ public class PictureApiHandlerTest {
 	
 	@Test
 	public void getPicturesStats_ok() {
+		Mockito.when(authService.readSessionToken("12345")).thenReturn(getUserData());
 		Mockito.when(pictureService.getPicturesStats()).thenReturn(50);
-		ResponseEntity<DownloadStatsHttpResponse> response = handler.getPicturesStats(new DownloadStatsHttpResponse());
+		ResponseEntity<DownloadStatsHttpResponse> response = handler.getPicturesStats(new DownloadStatsHttpResponse(), "12345");
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 	}
 	@Test
 	public void getPicturesStats_dbTimeout() {
+		Mockito.when(authService.readSessionToken("12345")).thenReturn(getUserData());
 		Mockito.when(pictureService.getPicturesStats()).thenThrow(CannotGetJdbcConnectionException.class);
-		ResponseEntity<DownloadStatsHttpResponse> response = handler.getPicturesStats(new DownloadStatsHttpResponse());
+		ResponseEntity<DownloadStatsHttpResponse> response = handler.getPicturesStats(new DownloadStatsHttpResponse(), "12345");
 		assertEquals(HttpStatus.SERVICE_UNAVAILABLE, response.getStatusCode());
 	}
 	@Test
 	public void getPicturesStats_internalError() {
+		Mockito.when(authService.readSessionToken("12345")).thenReturn(getUserData());
 		Mockito.when(pictureService.getPicturesStats()).thenThrow(RuntimeException.class);
-		ResponseEntity<DownloadStatsHttpResponse> response = handler.getPicturesStats(new DownloadStatsHttpResponse());
+		ResponseEntity<DownloadStatsHttpResponse> response = handler.getPicturesStats(new DownloadStatsHttpResponse(), "12345");
 		assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+	}
+	@Test
+	public void getPicturesStats_wrongAuthCode() {
+		Mockito.when(authService.readSessionToken("12345")).thenThrow(MalformedJwtException.class);
+		ResponseEntity<DownloadStatsHttpResponse> response = handler.getPicturesStats(new DownloadStatsHttpResponse(), "12345");
+		assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+	}
+	@Test
+	public void getPicturesStats_expiredSession() {
+		Mockito.when(authService.readSessionToken("12345")).thenThrow(ExpiredJwtException.class);
+		ResponseEntity<DownloadStatsHttpResponse> response = handler.getPicturesStats(new DownloadStatsHttpResponse(), "12345");
+		assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
 	}
 	
 	@Test
 	public void getPictureStats_ok() {
+		Mockito.when(authService.readSessionToken("12345")).thenReturn(getUserData());
 		Mockito.when(pictureService.getPictureStats("1")).thenReturn(25);
-		ResponseEntity<DownloadStatsHttpResponse> response = handler.getPictureStats(new DownloadStatsHttpResponse(), "1");
+		ResponseEntity<DownloadStatsHttpResponse> response = handler.getPictureStats(new DownloadStatsHttpResponse(), "1", "12345");
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 	}
 	@Test
 	public void getPictureStats_dbTimeout() {
+		Mockito.when(authService.readSessionToken("12345")).thenReturn(getUserData());
 		Mockito.when(pictureService.getPictureStats("1")).thenThrow(CannotGetJdbcConnectionException.class);
-		ResponseEntity<DownloadStatsHttpResponse> response = handler.getPictureStats(new DownloadStatsHttpResponse(), "1");
+		ResponseEntity<DownloadStatsHttpResponse> response = handler.getPictureStats(new DownloadStatsHttpResponse(), "1", "12345");
 		assertEquals(HttpStatus.SERVICE_UNAVAILABLE, response.getStatusCode());
 	}
 	@Test
 	public void getPictureStats_internalError() {
+		Mockito.when(authService.readSessionToken("12345")).thenReturn(getUserData());
 		Mockito.when(pictureService.getPictureStats("1")).thenThrow(RuntimeException.class);
-		ResponseEntity<DownloadStatsHttpResponse> response = handler.getPictureStats(new DownloadStatsHttpResponse(), "1");
+		ResponseEntity<DownloadStatsHttpResponse> response = handler.getPictureStats(new DownloadStatsHttpResponse(), "1", "12345");
 		assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+	}
+	@Test
+	public void getPictureStats_wrongAuthCode() {
+		Mockito.when(authService.readSessionToken("12345")).thenThrow(MalformedJwtException.class);
+		ResponseEntity<DownloadStatsHttpResponse> response = handler.getPictureStats(new DownloadStatsHttpResponse(), "1", "12345");
+		assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+	}
+	@Test
+	public void getPictureStats_expiredSession() {
+		Mockito.when(authService.readSessionToken("12345")).thenThrow(ExpiredJwtException.class);
+		ResponseEntity<DownloadStatsHttpResponse> response = handler.getPictureStats(new DownloadStatsHttpResponse(), "1", "12345");
+		assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
 	}
 	
 	//Adicional

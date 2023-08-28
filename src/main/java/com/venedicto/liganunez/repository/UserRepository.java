@@ -1,5 +1,7 @@
 package com.venedicto.liganunez.repository;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.CannotGetJdbcConnectionException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -11,6 +13,7 @@ import com.venedicto.liganunez.model.PasswordUpdateRequest;
 import com.venedicto.liganunez.model.UserData;
 import com.venedicto.liganunez.model.http.User;
 import com.venedicto.liganunez.repository.mappers.PasswordUpdateRequestRowMapper;
+import com.venedicto.liganunez.repository.mappers.UserDataRowMapper;
 import com.venedicto.liganunez.repository.mappers.UserRowMapper;
 
 @Repository
@@ -26,6 +29,7 @@ public class UserRepository {
 	private static final String DELETE_USER = "DELETE FROM users WHERE user_email = ?";
 	private static final String SELECT_PASSWORD_UPDATE_REQUEST = "SELECT request_code, request_user, request_creation_date FROM password_update_requests WHERE request_code = ?";
 	private static final String SELECT_USER = "SELECT user_id, user_email, user_password, user_name, user_age, user_address, user_permissions, user_creation_date, user_last_update FROM users WHERE user_email = ?";
+	private static final String SELECT_USERS = "SELECT user_id, user_email, user_name, user_age, user_address FROM users";
 	private static final String SELECT_USERS_COUNT = "SELECT COUNT(*) FROM users;";
 	private static final String UPDATE_USER_PASSWORD = "UPDATE users SET user_password = ? WHERE user_email = ?";
 	
@@ -42,6 +46,11 @@ public class UserRepository {
 	@Retryable(retryFor = CannotGetJdbcConnectionException.class, listeners = "dbRetryListeners", maxAttemptsExpression = "${db.retry.attempts}",  backoff = @Backoff(delayExpression = "${db.retry.delay}", maxDelayExpression = "${db.timeout}", multiplier = 1))
 	public UserData getUser(String email) {
 		return jdbcTemplate.queryForObject(SELECT_USER, new UserRowMapper(), email);
+	}
+	
+	@Retryable(retryFor = CannotGetJdbcConnectionException.class, listeners = "dbRetryListeners", maxAttemptsExpression = "${db.retry.attempts}",  backoff = @Backoff(delayExpression = "${db.retry.delay}", maxDelayExpression = "${db.timeout}", multiplier = 1))
+	public List<com.venedicto.liganunez.model.http.UserData> getUsers() {
+		return jdbcTemplate.query(SELECT_USERS, new UserDataRowMapper());
 	}
 	
 	@Retryable(retryFor = CannotGetJdbcConnectionException.class, listeners = "dbRetryListeners", maxAttemptsExpression = "${db.retry.attempts}",  backoff = @Backoff(delayExpression = "${db.retry.delay}", maxDelayExpression = "${db.timeout}", multiplier = 1))
@@ -76,7 +85,7 @@ public class UserRepository {
 	}
 	
 	@Retryable(retryFor = CannotGetJdbcConnectionException.class, listeners = "dbRetryListeners", maxAttemptsExpression = "${db.retry.attempts}",  backoff = @Backoff(delayExpression = "${db.retry.delay}", maxDelayExpression = "${db.timeout}", multiplier = 1))
-	public int getUsersStats() {
+	public Integer getUsersStats() {
 		return jdbcTemplate.queryForObject(SELECT_USERS_COUNT, Integer.class);
 	}
 }

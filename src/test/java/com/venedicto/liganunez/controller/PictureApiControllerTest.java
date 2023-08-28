@@ -83,13 +83,13 @@ public class PictureApiControllerTest {
     
     @Test
     public void getPicturesStats_ok() {
-    	controller.getPictureStats();
-    	Mockito.verify(handler, Mockito.times(1)).getPicturesStats(Mockito.any(DownloadStatsHttpResponse.class));
+    	controller.getPictureStats("xxxxx");
+    	Mockito.verify(handler, Mockito.times(1)).getPicturesStats(Mockito.any(DownloadStatsHttpResponse.class), Mockito.eq("xxxxx"));
     }
     
     @Test
     public void getPictureStats_ok() {
-    	controller.getPictureStats("aaaa");
-    	Mockito.verify(handler, Mockito.times(1)).getPictureStats(Mockito.any(DownloadStatsHttpResponse.class), Mockito.eq("aaaa"));
+    	controller.getPictureStats("aaaa", "xxxxx");
+    	Mockito.verify(handler, Mockito.times(1)).getPictureStats(Mockito.any(DownloadStatsHttpResponse.class), Mockito.eq("aaaa"), Mockito.eq("xxxxx"));
     }
 }

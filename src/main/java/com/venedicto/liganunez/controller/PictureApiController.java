@@ -61,17 +61,17 @@ public class PictureApiController implements PictureApi {
 		return handler.uploadPicture(request, response, token, tournamentId, place, date, files);
 	}
 
-	public ResponseEntity<DownloadStatsHttpResponse> getPictureStats() {
+	public ResponseEntity<DownloadStatsHttpResponse> getPictureStats(String token) {
 		DownloadStatsHttpResponse response = new DownloadStatsHttpResponse();
 		
 		log.info("[Pictures stats] Se consultaron las estadísticas de las imágenes");
-		return handler.getPicturesStats(response);
+		return handler.getPicturesStats(response, token);
 	}
 
-	public ResponseEntity<DownloadStatsHttpResponse> getPictureStats(String id) {
+	public ResponseEntity<DownloadStatsHttpResponse> getPictureStats(String id, String token) {
 		DownloadStatsHttpResponse response = new DownloadStatsHttpResponse();
 		
 		log.info("[Picture stats] Se consultaron las estadísticas de la imagen {}", id);
-		return handler.getPictureStats(response, id);
+		return handler.getPictureStats(response, id, token);
 	}
 }

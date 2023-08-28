@@ -1,5 +1,7 @@
 package com.venedicto.liganunez.handler;
 
+import java.util.List;
+
 import javax.security.auth.login.LoginException;
 
 import org.slf4j.Logger;
@@ -14,9 +16,11 @@ import org.springframework.jdbc.CannotGetJdbcConnectionException;
 import org.springframework.stereotype.Component;
 
 import com.venedicto.liganunez.exception.MailSenderException;
+import com.venedicto.liganunez.exception.NotAuthorizedException;
 import com.venedicto.liganunez.exception.RequestExpiredException;
 import com.venedicto.liganunez.model.ErrorCodes;
 import com.venedicto.liganunez.model.UserData;
+import com.venedicto.liganunez.model.http.GetUsersHttpResponse;
 import com.venedicto.liganunez.model.http.HttpResponse;
 import com.venedicto.liganunez.model.http.User;
 import com.venedicto.liganunez.model.http.UserLoginHttpResponse;
@@ -204,6 +208,45 @@ public class UserApiHandler {
 		return new ResponseEntity<HttpResponse>(response, httpStatus);
 	}
 	
+	public ResponseEntity<GetUsersHttpResponse> getUsers(GetUsersHttpResponse response, String token) {
+		HttpStatus httpStatus;
+		
+		try {
+			UserData user = authService.readSessionToken(token);
+			authService.validateAdminUser(user);
+			log.trace("[Get users] El usuario {} recibió acceso para obtener la información de todos los usuarios", user.getId());
+			
+			List<com.venedicto.liganunez.model.http.UserData> usersData = userService.getUsers();
+			response.setData(usersData);
+			log.trace("[Get users] Se listaron {} usuarios con éxito", usersData.size());
+			
+			httpStatus = HttpStatus.OK;
+			response.setOpCode("200");
+		} catch(MalformedJwtException | IllegalArgumentException | NotAuthorizedException e) {
+			httpStatus = HttpStatus.FORBIDDEN;
+			response.setOpCode("403");
+			response.addErrorsItem(HttpUtils.generateError(ErrorCodes.LN0015));
+			log.error("[Get users] Token inválido", e);
+		} catch(ExpiredJwtException e) {
+			httpStatus = HttpStatus.UNAUTHORIZED;
+			response.setOpCode("401");
+			response.addErrorsItem(HttpUtils.generateError(ErrorCodes.LN0016));
+			log.error("[Get users] Token expirado", e);
+		} catch(CannotGetJdbcConnectionException e) {
+			httpStatus = HttpStatus.SERVICE_UNAVAILABLE;
+			response.setOpCode("503");
+			response.addErrorsItem(HttpUtils.generateError(ErrorCodes.LN0002));
+			log.error("[Get users] No se pudo establecer conexión con la base de datos", e);
+		} catch(Exception e) {
+			httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+			response.setOpCode("500");
+			response.addErrorsItem(HttpUtils.generateError(ErrorCodes.LN0000));
+			log.error("[Get users] Ocurrió un error inesperado", e);
+		}
+		
+		return new ResponseEntity<GetUsersHttpResponse>(response, httpStatus);
+	}
+	
 	public ResponseEntity<HttpResponse> registerDownload(HttpResponse response, String token, String pictureId) {
 		HttpStatus httpStatus;
 		
@@ -245,14 +288,29 @@ public class UserApiHandler {
 		return new ResponseEntity<HttpResponse>(response, httpStatus);
 	}
 	
-	public ResponseEntity<UserStatsResponse> getUsersStats(UserStatsResponse response) {
+	public ResponseEntity<UserStatsResponse> getUsersStats(UserStatsResponse response, String token) {
 		HttpStatus httpStatus;
 		
 		try {
+			UserData user = authService.readSessionToken(token);
+			authService.validateAdminUser(user);
+			log.trace("[Users stats] El usuario {} recibió acceso para obtener las estadísticas de los usuarios", user.getId());
+			
 			int totalUsers = userService.getUsersStats();
 			response.setData(totalUsers);
+			
 			httpStatus = HttpStatus.OK;
 			response.setOpCode("200");
+		} catch(MalformedJwtException | IllegalArgumentException | NotAuthorizedException e) {
+			httpStatus = HttpStatus.FORBIDDEN;
+			response.setOpCode("403");
+			response.addErrorsItem(HttpUtils.generateError(ErrorCodes.LN0015));
+			log.error("[Get users] Token inválido", e);
+		} catch(ExpiredJwtException e) {
+			httpStatus = HttpStatus.UNAUTHORIZED;
+			response.setOpCode("401");
+			response.addErrorsItem(HttpUtils.generateError(ErrorCodes.LN0016));
+			log.error("[Get users] Token expirado", e);
 		} catch(CannotGetJdbcConnectionException e) {
 			httpStatus = HttpStatus.SERVICE_UNAVAILABLE;
 			response.setOpCode("503");
