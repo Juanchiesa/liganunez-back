@@ -9,9 +9,9 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @EnableWebMvc
 public class CorsConfiguration implements WebMvcConfigurer {
 	@Override
-    public void addCorsMappings(CorsRegistry registry) {
-		registry.addMapping("/**")
-				.allowedOrigins("*")
-				.allowedMethods("POST", "GET", "PATCH", "DELETE", "PUT");
-    } 
+	public void addCorsMappings(CorsRegistry registry) {
+	    registry.addMapping("/**")
+	            .allowedOrigins("https://stg.liganunez.com.ar")
+	            .allowedMethods("POST", "GET", "PATCH", "DELETE", "PUT");
+	}
 }
