@@ -1,2 +1,2 @@
-firebase.json -crlf -diff -merge
-CorsConfiguration.java  -crlf -diff -merge
+src/main/resources/firebase.json -crlf -diff -merge
+src/main/java/com/venedicto/liganunez/repository/CorsConfiguration.java  -crlf -diff -merge
