@@ -39,8 +39,8 @@ public class UserRepository {
 	}
 	
 	@Retryable(retryFor = CannotGetJdbcConnectionException.class, listeners = "dbRetryListeners", maxAttemptsExpression = "${db.retry.attempts}",  backoff = @Backoff(delayExpression = "${db.retry.delay}", maxDelayExpression = "${db.timeout}", multiplier = 1))
-	public void createUser(String id, String password, User user) {
-		jdbcTemplate.update(CREATE_USER, id, user.getEmail(), password, user.getName(), user.getAge(), user.getAddress());
+	public void createUser(String id, User user) {
+		jdbcTemplate.update(CREATE_USER, id, user.getEmail(), user.getAccessKey(), user.getName(), user.getAge(), user.getAddress());
 	}
 	
 	@Retryable(retryFor = CannotGetJdbcConnectionException.class, listeners = "dbRetryListeners", maxAttemptsExpression = "${db.retry.attempts}",  backoff = @Backoff(delayExpression = "${db.retry.delay}", maxDelayExpression = "${db.timeout}", multiplier = 1))

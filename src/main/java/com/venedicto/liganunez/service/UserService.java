@@ -40,15 +40,8 @@ public class UserService {
 		String id = UUID.randomUUID().toString();
 		log.trace("[Create user] Asignado el ID {} al usuario {}", id, user.getEmail());
 		
-		String password = NumberUtils.generateRandomNumber(6);
-		String encodedPassword = authService.encodePassword(password);
-		log.debug("[Create user] Password asignada correctamente");
-		
-		userRepository.createUser(id, encodedPassword, user);
-		
-		SendPasswordMailTemplate mailData = new SendPasswordMailTemplate();
-		mailData.setAccessKey(password);
-		mailService.sendMail(user.getEmail(), MailTypes.SEND_PASSWORD, mailData);
+		user.setAccessKey(authService.encodePassword(user.getAccessKey()));
+		userRepository.createUser(id, user);
 	}
 	
 	public UserData login(String email, String password) throws LoginException {

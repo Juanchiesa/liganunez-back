@@ -38,11 +38,12 @@ public class UserRepositoryTest {
 	public void createUser_ok() {
 		User user = new User();
 		user.setEmail("abc@gmail.com");
+		user.setAccessKey("1234");
 		user.setName("Test");
 		user.setAddress("Address");
 		user.setAge(23);
 		
-		repository.createUser("xxx-xx-x", "1234", user);
+		repository.createUser("xxx-xx-x", user);
 		Mockito.verify(jdbcTemplate, Mockito.times(1)).update(Mockito.anyString(), Mockito.eq("xxx-xx-x"), Mockito.eq("abc@gmail.com"), Mockito.eq("1234"), Mockito.eq("Test"), Mockito.eq(23), Mockito.eq("Address"));
 	}
 	

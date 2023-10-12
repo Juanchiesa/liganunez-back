@@ -71,12 +71,8 @@ public class UserServiceTest {
 	
 	@Test
 	public void createUser_ok() {
-		Mockito.when(authService.encodePassword(Mockito.anyString())).thenReturn("boca");
-		
 		service.createUser(user);
-		
-		Mockito.verify(userRepository, Mockito.times(1)).createUser(Mockito.anyString(), Mockito.eq("boca"), Mockito.any(User.class));
-		Mockito.verify(mailService, Mockito.times(1)).sendMail(Mockito.anyString(), Mockito.eq(MailTypes.SEND_PASSWORD), Mockito.any(SendPasswordMailTemplate.class));
+		Mockito.verify(userRepository, Mockito.times(1)).createUser(Mockito.anyString(), Mockito.any(User.class));
 	}
 	
 	@Test
